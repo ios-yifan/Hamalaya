@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -74,7 +73,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
             Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
             albumTitleTv.setText(album.getAlbumTitle());
-            albumDesrcTv.setText(album.getPriceTypeDetails());
+            albumDesrcTv.setText(album.getAlbumIntro());
             albumPlayCountTv.setText(album.getPlayCount()+"");
             albumContentTv.setText(album.getIncludeTrackCount()+"");
 
