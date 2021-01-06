@@ -1,55 +1,55 @@
 package com.androidstudy.himalaya;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import com.androidstudy.himalaya.utils.LogUtils;
-import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
-import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
-import com.ximalaya.ting.android.opensdk.model.category.Category;
-import com.ximalaya.ting.android.opensdk.model.category.CategoryList;
+import com.androidstudy.himalaya.adapters.IndicatorAdapter;
+import com.androidstudy.himalaya.adapters.MainContentAdapter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
+    private MagicIndicator magicIndicator;
+    private ViewPager contentPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Map<String, String> map = new HashMap<String, String>();
-        CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
-            @Override
-            public void onSuccess(CategoryList categoryList) {
+        initView();
+    }
 
-                List<Category> categories = categoryList.getCategories();
+    private void initView() {
 
-                if (categories != null){
-                    int size = categories.size();
-                    Log.d(TAG, "onSuccess: size" + size);
+        contentPager = findViewById(R.id.content_page);
 
-                    for (Category category : categories) {
+        /*commad alt f  抽取成员变量*/
+        magicIndicator = findViewById(R.id.main_indicator);
+        magicIndicator.setBackgroundColor(this.getResources().getColor(R.color.main_color));
 
-//                        Log.d(TAG, "onSuccess: category" + category.getCategoryName());
-                        LogUtils.d(TAG,"onSuccess: category " + category.getCategoryName());
-                    }
-                }
+        /*创建内容适配器*/
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        MainContentAdapter mainContentAdapter = new MainContentAdapter(supportFragmentManager);
+        contentPager.setAdapter(mainContentAdapter);
+        /*创建 indicator 的适配器*/
 
-            }
+        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(this);
+        CommonNavigator commonNavigator = new CommonNavigator(this);
+        commonNavigator.setAdapter(indicatorAdapter);
 
-            @Override
-            public void onError(int i, String s) {
+        magicIndicator.setNavigator(commonNavigator);
+        ViewPagerHelper.bind(magicIndicator,contentPager);
 
-                Log.d(TAG, "onError: error" + i + "msg" + s);
-            }
-        });
+
+
     }
 
 
