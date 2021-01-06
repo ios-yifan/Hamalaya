@@ -17,6 +17,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 public class IndicatorAdapter extends CommonNavigatorAdapter {
 
     private final String[] stringArray;
+    private OnIndicatorTapClickListener mOnTapClickListener;
 
     public IndicatorAdapter(Context context) {
         stringArray = context.getResources().getStringArray(R.array.indicator_name);
@@ -28,16 +29,18 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
     }
 
     @Override
-    public IPagerTitleView getTitleView(Context context, int index) {
+    public IPagerTitleView getTitleView(Context context, final int index) {
         SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
-        simplePagerTitleView.setNormalColor(Color.GRAY);
-        simplePagerTitleView.setSelectedColor(Color.WHITE);
+        simplePagerTitleView.setNormalColor(Color.parseColor("#aaffffff"));
+        simplePagerTitleView.setSelectedColor(Color.parseColor("#ffffff"));
+        simplePagerTitleView.setTextSize(18);
         simplePagerTitleView.setText(stringArray[index]);
         simplePagerTitleView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                //TODO
+                if (mOnTapClickListener != null) {
+                    mOnTapClickListener.onTabClick(index);
+                }
             }
         });
         return simplePagerTitleView;
@@ -49,5 +52,13 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
         linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
         linePagerIndicator.setColors(Color.WHITE);
         return linePagerIndicator;
+    }
+
+    public void setOnIndicatorTapClickListener(OnIndicatorTapClickListener listener){
+        this.mOnTapClickListener = listener;
+    }
+
+    public interface OnIndicatorTapClickListener{
+        void onTabClick(int index);
     }
 }

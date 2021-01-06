@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.androidstudy.himalaya.adapters.IndicatorAdapter;
 import com.androidstudy.himalaya.adapters.MainContentAdapter;
+import com.androidstudy.himalaya.utils.LogUtils;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -18,6 +19,7 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
     private MagicIndicator magicIndicator;
     private ViewPager contentPager;
+    private IndicatorAdapter indicatorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +27,30 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         initView();
+        initEvent();
+        
+    }
+
+    private void initEvent() {
+        indicatorAdapter.setOnIndicatorTapClickListener(new IndicatorAdapter.OnIndicatorTapClickListener() {
+            @Override
+            public void onTabClick(int index) {
+
+                LogUtils.d(TAG,"click index is >" + index);
+                if (contentPager != null){
+                    contentPager.setCurrentItem(index);
+                }
+            }
+        });
     }
 
     private void initView() {
 
         contentPager = findViewById(R.id.content_page);
-
         /*commad alt f  抽取成员变量*/
         magicIndicator = findViewById(R.id.main_indicator);
+
+        indicatorAdapter = new IndicatorAdapter(this);
         magicIndicator.setBackgroundColor(this.getResources().getColor(R.color.main_color));
 
         /*创建内容适配器*/
@@ -41,9 +59,10 @@ public class MainActivity extends FragmentActivity {
         contentPager.setAdapter(mainContentAdapter);
         /*创建 indicator 的适配器*/
 
-        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(this);
         CommonNavigator commonNavigator = new CommonNavigator(this);
+        commonNavigator.setAdjustMode(true); //平分位置
         commonNavigator.setAdapter(indicatorAdapter);
+
 
         magicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(magicIndicator,contentPager);
