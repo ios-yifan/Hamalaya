@@ -21,7 +21,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener {
 
     private final String TAG = "RecommendFragment";
     private View rootView;
@@ -46,6 +46,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
         //先设置通知接口
         mRecommendPresenter.registerViewCallback(this);
+        mLoader.setOnRetryClickListener(this);
 
         mRecommendPresenter.getRecommendList();
 
@@ -107,6 +108,15 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //取消接口注册，防止内存泄露
         if (mRecommendPresenter != null) {
             mRecommendPresenter.unRegisterViewCallback(this);
+        }
+    }
+
+    @Override
+    public void onRetryClick() {
+        // 网络不佳的时候 点击重试
+
+        if (mRecommendPresenter != null) {
+            mRecommendPresenter.getRecommendList();
         }
     }
 }
