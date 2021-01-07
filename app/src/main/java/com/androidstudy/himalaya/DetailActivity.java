@@ -13,7 +13,9 @@ import androidx.annotation.RequiresApi;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
+import com.androidstudy.himalaya.utils.ImageBlur;
 import com.androidstudy.himalaya.views.RoundRectImageView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
@@ -64,7 +66,16 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         }
 
         if (largeCover != null) {
-            Picasso.with(this).load(album.getCoverUrlLarge()).into(largeCover);
+            Picasso.with(this).load(album.getCoverUrlLarge()).into(largeCover, new Callback() {
+                @Override
+                public void onSuccess() {
+                    ImageBlur.makeBlur(largeCover,DetailActivity.this);
+                }
+
+                @Override
+                public void onError() {
+                }
+            });
         }
 
         if (smallCover != null) {
