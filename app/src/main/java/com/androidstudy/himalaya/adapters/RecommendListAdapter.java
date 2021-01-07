@@ -1,5 +1,6 @@
 package com.androidstudy.himalaya.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,9 @@ import java.util.List;
 
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
 
+    private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
+    private onRecommendItemClickListener mOnRecommendItemClickListener;
 
     @NonNull
     @Override
@@ -30,9 +33,18 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
 
         holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnRecommendItemClickListener != null) {
+                    mOnRecommendItemClickListener.onItemClick(position);
+                }
+                Log.d(TAG, "onClick: " + position);
+            }
+        });
         holder.setData(mData.get(position));
 
     }
@@ -78,5 +90,12 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             albumContentTv.setText(album.getIncludeTrackCount()+"");
 
         }
+    }
+
+    public void setonRecommendItemClickListener(onRecommendItemClickListener listener){
+        this.mOnRecommendItemClickListener = listener;
+    }
+    public interface onRecommendItemClickListener{
+        void onItemClick(int position);
     }
 }
