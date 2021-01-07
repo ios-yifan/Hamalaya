@@ -15,6 +15,7 @@ import com.androidstudy.himalaya.R;
 import com.androidstudy.himalaya.adapters.RecommendListAdapter;
 import com.androidstudy.himalaya.base.BaseFragment;
 import com.androidstudy.himalaya.interfaces.IRecommendViewCallback;
+import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
 import com.androidstudy.himalaya.presenters.RecommendPresenter;
 import com.androidstudy.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
@@ -124,8 +125,10 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, Album data) {
 
+
+        AlbumDetailPresenter.getInstance().setTargetAlbum(data);
         //点击跳转到详情界面
         Intent intent = new Intent(getContext(), DetailActivity.class);
         startActivity(intent);
