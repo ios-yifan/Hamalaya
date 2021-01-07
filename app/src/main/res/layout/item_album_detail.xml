@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_album_item_bg">
+
+    <TextView
+
+        android:layout_centerVertical="true"
+        android:id="@+id/order_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:padding="20dp"
+        android:textColor="#979797"
+        android:textSize="26sp"/>
+
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/order_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:text="我是大标题我是大标题我是大标题我是大标题"
+            android:layout_marginRight="150dp"
+            android:maxLines="1"/>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:drawableLeft="@mipmap/play_info_icon"
+                android:drawablePadding="4dp"
+                android:textColor="#979797"
+                android:layout_width="wrap_content"
+                android:textSize="12sp"
+                android:layout_height="wrap_content"
+                android:text="14.7万"/>
+            <TextView
+                android:drawablePadding="4dp"
+                android:drawableLeft="@mipmap/ic_sound"
+                android:layout_marginLeft="20dp"
+                android:textSize="12sp"
+                android:textColor="#979797"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="05:23"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="2021年01月07日"
+        android:textSize="12sp"
+        android:textColor="#979797"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
