@@ -1,8 +1,9 @@
 package com.androidstudy.himalaya.interfaces;
 
 import com.androidstudy.himalaya.DetailActivity;
+import com.androidstudy.himalaya.base.IBasePresenter;
 
-public interface IAlbumDetailPresenter {
+public interface IAlbumDetailPresenter extends IBasePresenter<IAlbumDetailViewCallback> {
 
     /**
      * 获取专辑详情
@@ -15,18 +16,4 @@ public interface IAlbumDetailPresenter {
     void pullRefreshMore();
 
     void loadMore();
-
-    /**
-     * 注册 UI通知接口
-     * @param detailViewCallback
-     */
-    void registerViewCallback(IAlbumDetailViewCallback detailViewCallback);
-
-    /**
-     * 删除 UI 通知接口
-     * @param detailViewCallback
-     */
-    void unRegisterViewCallback(IAlbumDetailViewCallback detailViewCallback);
-
-
 }
