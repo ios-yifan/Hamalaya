@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 接口的实现类
+ */
 public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
     private static final String TAG = "AlbumDetailPresenter";
@@ -59,7 +62,6 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
                     Log.d(TAG, "onSuccess: size > " + tracks.size());
                     handlerAlbumDetailResult(tracks);
-
                 }
             }
 
@@ -75,7 +77,6 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
         for (IAlbumDetailViewCallback callback : callbacks) {
             callback.onDetailListLoaded(tracks);
         }
-
     }
 
     @Override

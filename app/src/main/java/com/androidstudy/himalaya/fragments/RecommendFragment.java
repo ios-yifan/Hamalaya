@@ -42,8 +42,6 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
             }
         };
 
-
-
         //获取到逻辑对象
         mRecommendPresenter = RecommendPresenter.getInstance();
 
@@ -118,7 +116,6 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     @Override
     public void onRetryClick() {
         // 网络不佳的时候 点击重试
-
         if (mRecommendPresenter != null) {
             mRecommendPresenter.getRecommendList();
         }
@@ -126,8 +123,6 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
     @Override
     public void onItemClick(int position, Album data) {
-
-
         AlbumDetailPresenter.getInstance().setTargetAlbum(data);
         //点击跳转到详情界面
         Intent intent = new Intent(getContext(), DetailActivity.class);

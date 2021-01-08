@@ -28,14 +28,15 @@ public class MainActivity extends FragmentActivity {
 
         initView();
         initEvent();
-        
     }
 
+    /**
+     * 响应推荐页头部按钮的点击事件
+     */
     private void initEvent() {
         indicatorAdapter.setOnIndicatorTapClickListener(new IndicatorAdapter.OnIndicatorTapClickListener() {
             @Override
             public void onTabClick(int index) {
-
                 LogUtils.d(TAG,"click index is >" + index);
                 if (contentPager != null){
                     contentPager.setCurrentItem(index);
@@ -46,10 +47,11 @@ public class MainActivity extends FragmentActivity {
 
     private void initView() {
 
+        //初始化头部按钮和 viewpager
         contentPager = findViewById(R.id.content_page);
-        /*commad alt f  抽取成员变量*/
         magicIndicator = findViewById(R.id.main_indicator);
 
+        // 头部按钮实现 adapter
         indicatorAdapter = new IndicatorAdapter(this);
         magicIndicator.setBackgroundColor(this.getResources().getColor(R.color.main_color));
 
@@ -62,7 +64,6 @@ public class MainActivity extends FragmentActivity {
         CommonNavigator commonNavigator = new CommonNavigator(this);
         commonNavigator.setAdjustMode(true); //平分位置
         commonNavigator.setAdapter(indicatorAdapter);
-
 
         magicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(magicIndicator,contentPager);

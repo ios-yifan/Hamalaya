@@ -22,7 +22,9 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     private static RecommendPresenter sInstance = null;
 
+    //存储实现了 callback 的集合
     private List<IRecommendViewCallback> mCallbacks = new ArrayList<>();
+
     /**
      * 获取单例对象
      *
@@ -34,12 +36,8 @@ public class RecommendPresenter implements IRecommendPresenter {
                 sInstance = new RecommendPresenter();
             }
         }
-
         return sInstance;
     }
-
-
-
 
     /**
      * 获取推荐内容
@@ -55,8 +53,6 @@ public class RecommendPresenter implements IRecommendPresenter {
                 if (gussLikeAlbumList != null) {
                     List<Album> albumList = gussLikeAlbumList.getAlbumList();
                     if (albumList != null) {
-//                        LogUtils.d(TAG,"size >> " + albumList.size());
-                        //upRecommendUI(albumList);
                         handlerRecommendResult(albumList);
                     }
                 }
@@ -67,7 +63,6 @@ public class RecommendPresenter implements IRecommendPresenter {
                 handlerError();
             }
         });
-
     }
 
     private void handlerError() {
@@ -106,6 +101,9 @@ public class RecommendPresenter implements IRecommendPresenter {
         }
     }
 
+    /**
+     * 外部实现接口注册的时候 将注册接口的对象存储起来。
+     */
     @Override
     public void registerViewCallback(IRecommendViewCallback callback) {
 
@@ -114,6 +112,10 @@ public class RecommendPresenter implements IRecommendPresenter {
         }
     }
 
+    /**
+     * 将存起来的对象在取消注册的时候删除掉
+     * @param callback
+     */
     @Override
     public void unRegisterViewCallback(IRecommendViewCallback callback) {
 

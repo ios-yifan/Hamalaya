@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 
-import com.androidstudy.himalaya.MainActivity;
 import com.androidstudy.himalaya.R;
 
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -54,11 +53,20 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
         return linePagerIndicator;
     }
 
+    /**
+     * 通过这个 listener 来通知外部页面点击了头部按钮，外部需要通过这个接口来处理相关内容
+     * @param listener
+     */
     public void setOnIndicatorTapClickListener(OnIndicatorTapClickListener listener){
         this.mOnTapClickListener = listener;
     }
 
     public interface OnIndicatorTapClickListener{
+
+        /**
+         * 点击头部按钮触发此接口
+         * @param index
+         */
         void onTabClick(int index);
     }
 }
