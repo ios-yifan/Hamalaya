@@ -108,12 +108,12 @@
             android:textColor="#979797 "
             android:text="作者"/>
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:overScrollMode="never"
-        android:id="@+id/album_recycle"
+    
+    <FrameLayout
+        android:id="@+id/detail_list_container"
         android:layout_below="@+id/play_control_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
+    </FrameLayout>
 </RelativeLayout>

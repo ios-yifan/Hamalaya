@@ -14,6 +14,13 @@ public interface IAlbumDetailViewCallback {
     void onDetailListLoaded(List<Track> tracks);
 
     /**
+     * 网络错误
+     * @param i
+     * @param s
+     */
+    void onNetworkError(int i, String s);
+
+    /**
      * album 传给 UI
      * @param album
      */

@@ -25,6 +25,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     private static final String TAG = "AlbumDetailPresenter";
     private Album mTargetAlbum = null;
     private List<IAlbumDetailViewCallback> callbacks = new ArrayList<>();
+    private Object String;
 
 
     private AlbumDetailPresenter() {
@@ -68,8 +69,16 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
             @Override
             public void onError(int i, String s) {
 
+                handlerError(i,s);
             }
         });
+    }
+
+    private void handlerError(int i, String s) {
+
+        for (IAlbumDetailViewCallback callback : callbacks) {
+            callback.onNetworkError(i, s);
+        }
     }
 
     private void handlerAlbumDetailResult(List<Track> tracks) {

@@ -23,6 +23,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/detail_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000000"
@@ -36,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/detail_item_play_count"
                 android:drawableLeft="@mipmap/play_info_icon"
                 android:drawablePadding="4dp"
                 android:textColor="#979797"
@@ -44,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="14.7万"/>
             <TextView
+                android:id="@+id/detail_item_play_time"
                 android:drawablePadding="4dp"
                 android:drawableLeft="@mipmap/ic_sound"
                 android:layout_marginLeft="20dp"
@@ -56,8 +59,11 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/detail_item_update_time"
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
         android:layout_centerVertical="true"
         android:text="2021年01月07日"
         android:textSize="12sp"
