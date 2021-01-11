@@ -22,6 +22,7 @@ import com.androidstudy.himalaya.adapters.DetailListAdapter;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
+import com.androidstudy.himalaya.presenters.PlayerPresenter;
 import com.androidstudy.himalaya.utils.ImageBlur;
 import com.androidstudy.himalaya.views.RoundRectImageView;
 import com.androidstudy.himalaya.views.UILoader;
@@ -187,7 +188,10 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     }
 
     @Override
-    public void onItemClick() {
+    public void onItemClick(List<Track> list, int position) {
+        //设置播放器的数据
+        PlayerPresenter playerPresenter = PlayerPresenter.getPlayerPresenter();
+        playerPresenter.setPlayList(list,position);
         Intent intent = new Intent(this,PlayerActivity.class);
         startActivity(intent);
     }

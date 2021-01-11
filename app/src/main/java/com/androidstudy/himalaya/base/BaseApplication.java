@@ -15,6 +15,7 @@ public class BaseApplication extends Application {
 
     private static android.os.Handler sHandler = null;
 
+    private static Context sContext = null;
 
     @Override
     public void onCreate() {
@@ -33,13 +34,21 @@ public class BaseApplication extends Application {
             mXimalaya.init(this,mAppSecret);
         }
 
+        //初始化播放器
+        XmPlayerManager.getInstance(this).init();
+
         /*日志初始化*/
         LogUtils.init(this.getPackageName(),false);
 
         sHandler = new Handler();
 
+        sContext = getBaseContext();
+
     }
 
+    public static Context getAppContext(){
+        return sContext;
+    }
     public static android.os.Handler getHandler(){
         return sHandler;
     }
