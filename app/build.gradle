@@ -12,6 +12,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
 
     buildTypes {
@@ -34,6 +37,9 @@ dependencies {
     implementation files('libs/gson-2.8.0.jar')
     implementation files('libs/okhttp-3.3.1.jar')
     implementation files('libs/okio-1.8.0.jar')
+    implementation files('libs/TingPhoneOpenSDK_7.5.1.jar')
+    implementation files('libs/XmDownload_2.0.jar')
+    implementation files('libs/XmlyOAuth2SDK_V2.0.jar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
