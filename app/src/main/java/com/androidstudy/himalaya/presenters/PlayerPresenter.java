@@ -214,6 +214,9 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void onPlayProgress(int i, int i1) {
         Log.d(TAG, "onPlayProgress: " + i + ">>>" + i1);
+        for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
+            iPlayerViewCallback.onProgressChange(i,i1);
+        }
     }
 
     @Override
