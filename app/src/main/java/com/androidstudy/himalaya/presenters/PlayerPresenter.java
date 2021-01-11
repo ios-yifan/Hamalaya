@@ -58,7 +58,9 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void pause() {
-
+        if (isPlayListSet){
+            mInstance.pause();
+        }
     }
 
     @Override
@@ -105,7 +107,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
-        if (mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
+        if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
         }
     }
