@@ -108,7 +108,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void playByIndex(int index) {
-
+        mInstance.play(index);
     }
 
     @Override
