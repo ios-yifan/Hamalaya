@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Trace;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -39,6 +40,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     private TextView mTitle;
     private String mTrackTitleText;
     private PlayerTrackPageAdapter mTrackPageAdapter;
+    private ViewPager mTrackPageView;
+    private boolean mIsUserSlidePage = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,6 +138,43 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
                 }
             }
         });
+
+        mTrackPageView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mPlayerPresenter != null && mIsUserSlidePage) {
+                    //当页面选中，切换播放内容
+                    mPlayerPresenter.playByIndex(position);
+                }
+                mIsUserSlidePage = false;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        mTrackPageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action){
+                    case MotionEvent.ACTION_DOWN:
+                        mIsUserSlidePage = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void initView() {
@@ -149,10 +189,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         if (!TextUtils.isEmpty(mTrackTitleText)) {
             mTitle.setText(mTrackTitleText);
         }
-        ViewPager trackPageView = findViewById(R.id.vp_track);
+        mTrackPageView = findViewById(R.id.vp_track);
         //设置适配器
         mTrackPageAdapter = new PlayerTrackPageAdapter();
-        trackPageView.setAdapter(mTrackPageAdapter);
+        mTrackPageView.setAdapter(mTrackPageAdapter);
     }
 
     @Override
@@ -251,10 +291,14 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     }
 
     @Override
-    public void onTrackUpdate(Track track) {
+    public void onTrackUpdate(Track track,int playIndex) {
         this.mTrackTitleText = track.getTrackTitle();
         if (mTitle != null) {
             mTitle.setText(mTrackTitleText);
+        }
+
+        if (mTrackPageView != null) {
+            mTrackPageView.setCurrentItem(playIndex,true);
         }
     }
 }

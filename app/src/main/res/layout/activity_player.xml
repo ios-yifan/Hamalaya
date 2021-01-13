@@ -28,8 +28,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#00ffff">
+        android:layout_alignParentBottom="true">
 
         <!--进度条和时间-->
         <RelativeLayout

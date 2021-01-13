@@ -26,6 +26,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private final XmPlayerManager mInstance;
     private List<IPlayerViewCallback> mIPlayerViewCallbacks = new ArrayList<>();
     private Track mTrack;
+    private int mCurrentIndex = 0;
 
     private PlayerPresenter() {
         mInstance = XmPlayerManager.getInstance(BaseApplication.getAppContext());
@@ -51,6 +52,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             isPlayListSet = true;
             Track track = list.get(playIndex);
             mTrack = track;
+            mCurrentIndex = playIndex;
         }
     }
 
@@ -124,7 +126,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
-        iPlayerViewCallback.onTrackUpdate(mTrack);
+        iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
         if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
         }
@@ -220,6 +222,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         //    Track curTrack = (Track)playableModel;
         //    Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
         //}
+        mCurrentIndex = mInstance.getCurrentIndex();
 
         // 第二种写法
         if (playableModel instanceof Track) {
@@ -228,9 +231,11 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
             mTrack = curTrack;
             for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
-                iPlayerViewCallback.onTrackUpdate(mTrack);
+                iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
             }
         }
+
+        // 修改页面图片
     }
 
     @Override
