@@ -25,12 +25,13 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private static PlayerPresenter sPlayerPresenter;
     private final XmPlayerManager mInstance;
     private List<IPlayerViewCallback> mIPlayerViewCallbacks = new ArrayList<>();
-    private String mTrackTitle;
+    private Track mTrack;
 
     private PlayerPresenter() {
         mInstance = XmPlayerManager.getInstance(BaseApplication.getAppContext());
         mInstance.addAdsStatusListener(this);
         mInstance.addPlayerStatusListener(this);
+
     }
 
     public static PlayerPresenter getPlayerPresenter() {
@@ -49,7 +50,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             mInstance.setPlayList(list, playIndex);
             isPlayListSet = true;
             Track track = list.get(playIndex);
-            mTrackTitle = track.getTrackTitle();
+            mTrack = track;
         }
     }
 
@@ -95,7 +96,12 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void getPlayList() {
-
+        if (mInstance != null) {
+            List<Track> playList = mInstance.getPlayList();
+            for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
+                iPlayerViewCallback.onListLoaded(playList);
+            }
+        }
     }
 
     @Override
@@ -118,7 +124,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
-        iPlayerViewCallback.onTrackTitleUpdate(mTrackTitle);
+        iPlayerViewCallback.onTrackUpdate(mTrack);
         if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
         }
@@ -220,9 +226,9 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             Track curTrack = (Track) playableModel;
             Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
 
-            mTrackTitle = curTrack.getTrackTitle();
+            mTrack = curTrack;
             for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
-                iPlayerViewCallback.onTrackTitleUpdate(mTrackTitle);
+                iPlayerViewCallback.onTrackUpdate(mTrack);
             }
         }
     }

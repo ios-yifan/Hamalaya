@@ -1,7 +1,7 @@
 package com.androidstudy.himalaya.interfaces;
 
-import android.os.Trace;
 
+import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import java.util.List;
@@ -31,18 +31,18 @@ public interface IPlayerViewCallback {
     /**
      * 下一首
      */
-    void onNextPlay(Trace trace);
+    void onNextPlay(Track trace);
 
     /**
      * 上一首
      */
-    void onPrePlay(Trace trace);
+    void onPrePlay(Track trace);
 
     /**
      * 播放列表数据加载完成
      * @param list
      */
-    void onListLoaded(List<Trace> list);
+    void onListLoaded(List<Track> list);
 
     /**
      * 播放模式改变了
@@ -68,9 +68,9 @@ public interface IPlayerViewCallback {
     void onAdFinished();
 
     /**
-     * 更新节目标题
-     * @param title
+     * 更新节目
+     * @param track
      */
-    void onTrackTitleUpdate(String title);
+    void onTrackUpdate(Track track);
 }
 

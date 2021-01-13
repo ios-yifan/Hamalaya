@@ -10,10 +10,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
+import com.androidstudy.himalaya.adapters.PlayerTrackPageAdapter;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
 import com.androidstudy.himalaya.presenters.PlayerPresenter;
+import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +38,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     private ImageView mPlayPreBtn;
     private TextView mTitle;
     private String mTrackTitleText;
+    private PlayerTrackPageAdapter mTrackPageAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,8 +49,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
         initView();
+        mPlayerPresenter.getPlayList();
         initEvent();
         startPlay();
+
     }
 
     @Override
@@ -143,6 +149,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         if (!TextUtils.isEmpty(mTrackTitleText)) {
             mTitle.setText(mTrackTitleText);
         }
+        ViewPager trackPageView = findViewById(R.id.vp_track);
+        //设置适配器
+        mTrackPageAdapter = new PlayerTrackPageAdapter();
+        trackPageView.setAdapter(mTrackPageAdapter);
     }
 
     @Override
@@ -175,17 +185,22 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     }
 
     @Override
-    public void onNextPlay(Trace trace) {
+    public void onNextPlay(Track trace) {
 
     }
 
     @Override
-    public void onPrePlay(Trace trace) {
+    public void onPrePlay(Track trace) {
 
     }
 
     @Override
-    public void onListLoaded(List<Trace> list) {
+    public void onListLoaded(List<Track> list) {
+        // 把数据设置到适配器里
+
+        if (mTrackPageAdapter != null) {
+            mTrackPageAdapter.setData(list);
+        }
 
     }
 
@@ -236,10 +251,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     }
 
     @Override
-    public void onTrackTitleUpdate(String title) {
-        this.mTrackTitleText = title;
+    public void onTrackUpdate(Track track) {
+        this.mTrackTitleText = track.getTrackTitle();
         if (mTitle != null) {
-            mTitle.setText(title);
+            mTitle.setText(mTrackTitleText);
         }
     }
 }
