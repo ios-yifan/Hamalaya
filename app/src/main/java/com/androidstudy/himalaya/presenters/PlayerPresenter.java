@@ -225,8 +225,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         mCurrentIndex = mInstance.getCurrentIndex();
 
         // 第二种写法
-        if (playableModel instanceof Track) {
-            Track curTrack = (Track) playableModel;
+        if (playableModel1 instanceof Track) {
+            Track curTrack = (Track) playableModel1;
             Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
 
             mTrack = curTrack;

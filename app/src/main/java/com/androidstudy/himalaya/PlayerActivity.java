@@ -1,7 +1,6 @@
 package com.androidstudy.himalaya;
 
 import android.os.Bundle;
-import android.os.Trace;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -164,7 +163,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
-                switch (action){
+                switch (action) {
                     case MotionEvent.ACTION_DOWN:
                         mIsUserSlidePage = true;
                         break;
@@ -291,14 +290,14 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     }
 
     @Override
-    public void onTrackUpdate(Track track,int playIndex) {
+    public void onTrackUpdate(Track track, int playIndex) {
         this.mTrackTitleText = track.getTrackTitle();
         if (mTitle != null) {
             mTitle.setText(mTrackTitleText);
         }
 
         if (mTrackPageView != null) {
-            mTrackPageView.setCurrentItem(playIndex,true);
+            mTrackPageView.setCurrentItem(playIndex, true);
         }
     }
 }
