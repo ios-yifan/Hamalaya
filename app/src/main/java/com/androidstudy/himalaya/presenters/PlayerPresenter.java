@@ -25,16 +25,17 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private static PlayerPresenter sPlayerPresenter;
     private final XmPlayerManager mInstance;
     private List<IPlayerViewCallback> mIPlayerViewCallbacks = new ArrayList<>();
+    private String mTrackTitle;
 
-    private PlayerPresenter(){
+    private PlayerPresenter() {
         mInstance = XmPlayerManager.getInstance(BaseApplication.getAppContext());
         mInstance.addAdsStatusListener(this);
         mInstance.addPlayerStatusListener(this);
     }
 
-    public static PlayerPresenter getPlayerPresenter(){
+    public static PlayerPresenter getPlayerPresenter() {
         if (sPlayerPresenter == null) {
-            synchronized (PlayerPresenter.class){
+            synchronized (PlayerPresenter.class) {
                 sPlayerPresenter = new PlayerPresenter();
             }
         }
@@ -42,23 +43,26 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     }
 
     private boolean isPlayListSet = false;
-    public void setPlayList(List<Track> list, int playIndex){
+
+    public void setPlayList(List<Track> list, int playIndex) {
         if (list != null) {
-            mInstance.setPlayList(list,playIndex);
+            mInstance.setPlayList(list, playIndex);
             isPlayListSet = true;
+            Track track = list.get(playIndex);
+            mTrackTitle = track.getTrackTitle();
         }
     }
 
     @Override
     public void play() {
-        if (isPlayListSet){
+        if (isPlayListSet) {
             mInstance.play();
         }
     }
 
     @Override
     public void pause() {
-        if (isPlayListSet){
+        if (isPlayListSet) {
             mInstance.pause();
         }
     }
@@ -78,7 +82,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void playNext() {
-        if (mInstance != null){
+        if (mInstance != null) {
             mInstance.playNext();
         }
 
@@ -114,6 +118,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
+        iPlayerViewCallback.onTrackTitleUpdate(mTrackTitle);
         if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
         }
@@ -121,7 +126,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void unRegisterViewCallback(IPlayerViewCallback iPlayerViewCallback) {
-    mIPlayerViewCallbacks.remove(iPlayerViewCallback);
+        mIPlayerViewCallbacks.remove(iPlayerViewCallback);
     }
 
     /*广告相关回调*/
@@ -201,6 +206,25 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void onSoundSwitch(PlayableModel playableModel, PlayableModel playableModel1) {
         Log.d(TAG, "onSoundSwitch: ");
+        // currentModel 当前播放的内容
+        // 通过 getKind 获取是什么类型
+        // track 表示 track 类型
+        // 第一种写法 不推荐
+        //if ("track".equals(playableModel.getKind())) {
+        //    Track curTrack = (Track)playableModel;
+        //    Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
+        //}
+
+        // 第二种写法
+        if (playableModel instanceof Track) {
+            Track curTrack = (Track) playableModel;
+            Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
+
+            mTrackTitle = curTrack.getTrackTitle();
+            for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
+                iPlayerViewCallback.onTrackTitleUpdate(mTrackTitle);
+            }
+        }
     }
 
     @Override
@@ -222,7 +246,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     public void onPlayProgress(int i, int i1) {
         Log.d(TAG, "onPlayProgress: " + i + ">>>" + i1);
         for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
-            iPlayerViewCallback.onProgressChange(i,i1);
+            iPlayerViewCallback.onProgressChange(i, i1);
         }
     }
 

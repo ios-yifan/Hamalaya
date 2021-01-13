@@ -2,6 +2,7 @@ package com.androidstudy.himalaya;
 
 import android.os.Bundle;
 import android.os.Trace;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +33,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     private boolean mIsUserTouch = false;
     private ImageView mPlayNextBtn;
     private ImageView mPlayPreBtn;
+    private TextView mTitle;
+    private String mTrackTitleText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,6 +139,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mSeekbar = findViewById(R.id.track_seek_bar);
         mPlayNextBtn = findViewById(R.id.play_next);
         mPlayPreBtn = findViewById(R.id.play_pre);
+        mTitle = findViewById(R.id.track_title);
+        if (!TextUtils.isEmpty(mTrackTitleText)) {
+            mTitle.setText(mTrackTitleText);
+        }
     }
 
     @Override
@@ -226,5 +233,13 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     @Override
     public void onAdFinished() {
 
+    }
+
+    @Override
+    public void onTrackTitleUpdate(String title) {
+        this.mTrackTitleText = title;
+        if (mTitle != null) {
+            mTitle.setText(title);
+        }
     }
 }
