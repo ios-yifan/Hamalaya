@@ -53,7 +53,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         initView();
         mPlayerPresenter.getPlayList();
         initEvent();
-        startPlay();
+
 
     }
 
@@ -69,14 +69,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         }
     }
 
-    /**
-     * 开始播放
-     */
-    private void startPlay() {
-        if (mPlayerPresenter != null) {
-            mPlayerPresenter.play();
-        }
-    }
+
 
     /**
      * 给控件添加事件
@@ -198,7 +191,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     public void onPlayStart() {
         Log.d(TAG, "onPlayStart: 开始播放");
         if (mControlBtn != null) {
-            mControlBtn.setImageResource(R.mipmap.stop_normal);
+            mControlBtn.setImageResource(R.drawable.selector_player_stop);
         }
     }
 
@@ -206,7 +199,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     public void onPlayPause() {
         Log.d(TAG, "onPlayPause: 播放暂停");
         if (mControlBtn != null) {
-            mControlBtn.setImageResource(R.mipmap.play_black_normal);
+            mControlBtn.setImageResource(R.drawable.selector_player_play);
         }
     }
 
@@ -214,7 +207,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     public void onPlayStop() {
         Log.d(TAG, "onPlayStop: 播放停止");
         if (mControlBtn != null) {
-            mControlBtn.setImageResource(R.mipmap.play_black_normal);
+            mControlBtn.setImageResource(R.drawable.selector_player_play);
         }
     }
 
@@ -240,6 +233,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         if (mTrackPageAdapter != null) {
             mTrackPageAdapter.setData(list);
         }
+
 
     }
 
