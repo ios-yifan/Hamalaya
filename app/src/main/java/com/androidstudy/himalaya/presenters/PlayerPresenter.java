@@ -70,11 +70,17 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void playPre() {
+        if (mInstance != null) {
+            mInstance.playPre();
+        }
 
     }
 
     @Override
     public void playNext() {
+        if (mInstance != null){
+            mInstance.playNext();
+        }
 
     }
 

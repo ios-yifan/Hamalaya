@@ -30,6 +30,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     private SeekBar mSeekbar;
     private int currentProgress = 0;
     private boolean mIsUserTouch = false;
+    private ImageView mPlayNextBtn;
+    private ImageView mPlayPreBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,9 +74,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mControlBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPlayerPresenter.isPlay()){
+                if (mPlayerPresenter.isPlay()) {
                     mPlayerPresenter.pause();
-                }else{
+                } else {
                     mPlayerPresenter.play();
                 }
             }
@@ -91,15 +93,37 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-    mIsUserTouch = true;
+                mIsUserTouch = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
                 //手离开进度条
-mIsUserTouch = false;
-mPlayerPresenter.seekTo(currentProgress);
+                mIsUserTouch = false;
+                mPlayerPresenter.seekTo(currentProgress);
+            }
+        });
+
+        //播放下一首
+        mPlayNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playNext();
+                }
+            }
+        });
+
+        //播放上一首
+        mPlayPreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playPre();
+                }
             }
         });
     }
@@ -110,11 +134,13 @@ mPlayerPresenter.seekTo(currentProgress);
         mTotalDuration = findViewById(R.id.track_duration);
         mCurrentPosition = findViewById(R.id.current_position);
         mSeekbar = findViewById(R.id.track_seek_bar);
+        mPlayNextBtn = findViewById(R.id.play_next);
+        mPlayPreBtn = findViewById(R.id.play_pre);
     }
 
     @Override
     public void onPlayStart() {
-        Log.d(TAG,  "onPlayStart: 开始播放");
+        Log.d(TAG, "onPlayStart: 开始播放");
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.mipmap.stop_normal);
         }
@@ -122,7 +148,7 @@ mPlayerPresenter.seekTo(currentProgress);
 
     @Override
     public void onPlayPause() {
-        Log.d(TAG,  "onPlayPause: 播放暂停");
+        Log.d(TAG, "onPlayPause: 播放暂停");
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.mipmap.play_black_normal);
         }
@@ -130,7 +156,7 @@ mPlayerPresenter.seekTo(currentProgress);
 
     @Override
     public void onPlayStop() {
-        Log.d(TAG,  "onPlayStop: 播放停止");
+        Log.d(TAG, "onPlayStop: 播放停止");
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.mipmap.play_black_normal);
         }
@@ -164,14 +190,14 @@ mPlayerPresenter.seekTo(currentProgress);
     @Override
     public void onProgressChange(long currentProgress, long total) {
 
-        mSeekbar.setMax((int)total);
+        mSeekbar.setMax((int) total);
         //更新进度条
         String totalDuration;
         String currentPosition;
-        if (total>1000*60*60) {
+        if (total > 1000 * 60 * 60) {
             totalDuration = mHourFormat.format(total);
             currentPosition = mHourFormat.format(currentProgress);
-        }else{
+        } else {
             totalDuration = mMinFormat.format(total);
             currentPosition = mMinFormat.format(currentProgress);
         }
@@ -187,8 +213,8 @@ mPlayerPresenter.seekTo(currentProgress);
         }
 
 
-        if (!mIsUserTouch){
-            mSeekbar.setProgress((int)currentProgress);
+        if (!mIsUserTouch) {
+            mSeekbar.setProgress((int) currentProgress);
         }
     }
 
