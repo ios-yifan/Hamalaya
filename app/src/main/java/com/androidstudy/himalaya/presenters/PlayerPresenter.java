@@ -95,7 +95,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void seekTo(int progress) {
-
+        //更新播放器的进度
+        mInstance.seekTo(progress);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Trace;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -26,6 +27,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     private SimpleDateFormat mHourFormat = new SimpleDateFormat("hh:mm:ss");
     private TextView mTotalDuration;
     private TextView mCurrentPosition;
+    private SeekBar mSeekbar;
+    private int currentProgress = 0;
+    private boolean mIsUserTouch = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +79,29 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
                 }
             }
         });
+
+        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                if (fromUser) {
+                    currentProgress = progress;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+    mIsUserTouch = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+                //手离开进度条
+mIsUserTouch = false;
+mPlayerPresenter.seekTo(currentProgress);
+            }
+        });
     }
 
     private void initView() {
@@ -82,6 +109,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mControlBtn = findViewById(R.id.play_or_pause_btn);
         mTotalDuration = findViewById(R.id.track_duration);
         mCurrentPosition = findViewById(R.id.current_position);
+        mSeekbar = findViewById(R.id.track_seek_bar);
     }
 
     @Override
@@ -136,6 +164,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     @Override
     public void onProgressChange(long currentProgress, long total) {
 
+        mSeekbar.setMax((int)total);
         //更新进度条
         String totalDuration;
         String currentPosition;
@@ -155,6 +184,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
         if (mCurrentPosition != null) {
             mCurrentPosition.setText(currentPosition);
+        }
+
+
+        if (!mIsUserTouch){
+            mSeekbar.setProgress((int)currentProgress);
         }
     }
 
