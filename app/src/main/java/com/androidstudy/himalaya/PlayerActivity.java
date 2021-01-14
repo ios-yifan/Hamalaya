@@ -3,9 +3,13 @@ package com.androidstudy.himalaya;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,6 +20,7 @@ import com.androidstudy.himalaya.adapters.PlayerTrackPageAdapter;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
 import com.androidstudy.himalaya.presenters.PlayerPresenter;
+import com.androidstudy.himalaya.views.DPopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
@@ -53,6 +58,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         sPlayModeRule.put(XmPlayListControl.PlayMode.PLAY_MODEL_RANDOM, XmPlayListControl.PlayMode.PLAY_MODEL_SINGLE_LOOP);
         sPlayModeRule.put(XmPlayListControl.PlayMode.PLAY_MODEL_SINGLE_LOOP, XmPlayListControl.PlayMode.PLAY_MODEL_LIST);
     }
+
+    private View mPlayListBtn;
+    private DPopWindow mDPopWindow;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -193,7 +201,36 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
             }
         });
+
+        mPlayListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mDPopWindow.showAtLocation(v, Gravity.BOTTOM,0,0);
+                // 处理背景
+                updateBgAlpha(0.8f);
+
+            }
+        });
+
+        mDPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //窗体消失，恢复透明度
+                updateBgAlpha(1.0f);
+            }
+        });
+
     }
+
+    public void updateBgAlpha(float alpha) {
+        Log.d(TAG, "updateBgAlpha: >>>>>>>" + alpha);
+        Window window = this.getWindow();
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.alpha = alpha;
+        window.setAttributes(attributes);
+    }
+
 
     /**
      * 根据当前的状态更新播放模式图标
@@ -234,6 +271,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mTrackPageAdapter = new PlayerTrackPageAdapter();
         mTrackPageView.setAdapter(mTrackPageAdapter);
         mPlayerSwichBtn = findViewById(R.id.player_mode_switch_btn);
+        mPlayListBtn = findViewById(R.id.player_list);
+        mDPopWindow = new DPopWindow();
     }
 
     @Override
