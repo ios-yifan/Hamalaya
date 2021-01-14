@@ -1,6 +1,7 @@
 package com.androidstudy.himalaya.presenters;
 
-import android.os.Trace;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.androidstudy.himalaya.base.BaseApplication;
@@ -28,11 +29,31 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private List<IPlayerViewCallback> mIPlayerViewCallbacks = new ArrayList<>();
     private Track mTrack;
     private int mCurrentIndex = 0;
+    private final SharedPreferences mSp;
+
+    private XmPlayListControl.PlayMode mCurrentMode = XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
+    /**
+     *          PLAY_MODEL_SINGLE,
+     *         PLAY_MODEL_SINGLE_LOOP,
+     *         PLAY_MODEL_LIST,
+     *         PLAY_MODEL_LIST_LOOP,
+     *         PLAY_MODEL_RANDOM;
+     */
+    public static final int  PLAY_MODEL_LIST_INT = 0;
+    public static final int PLAY_MODEL_LIST_LOOP_INT = 1;
+    public static final int PLAY_MODEL_RANDOM_INT = 2;
+    public static final int PLAY_MODEL_SINGLE_LOOP_INT = 3;
+
+    // sp - key name
+    public static final String PLAY_MODE_SP_NAME = "PlayMode";
+    public static final String PLAY_MODE_SP_KEY = "currentPlayMode";
 
     private PlayerPresenter() {
         mInstance = XmPlayerManager.getInstance(BaseApplication.getAppContext());
         mInstance.addAdsStatusListener(this);
         mInstance.addPlayerStatusListener(this);
+        //记录当前的播放模式
+        mSp = BaseApplication.getAppContext().getSharedPreferences(PLAY_MODE_SP_NAME, Context.MODE_PRIVATE);
 
     }
 
@@ -94,7 +115,47 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void switchPlayMode(XmPlayListControl.PlayMode mode) {
+        if (mInstance != null) {
+            mCurrentMode = mode;
+            mInstance.setPlayMode(mode);
+            //通知 UI 更新播放模式
+            for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
+                iPlayerViewCallback.onPlayModeChange(mode);
+            }
+            //保存到 Sp 中
+            SharedPreferences.Editor editor = mSp.edit();
+            editor.putInt(PLAY_MODE_SP_KEY,getIntByPlayMode(mode));
+            editor.commit();
 
+        }
+    }
+
+    private int getIntByPlayMode(XmPlayListControl.PlayMode mode){
+        switch (mode){
+            case PLAY_MODEL_LIST:
+                return PLAY_MODEL_LIST_INT;
+            case PLAY_MODEL_LIST_LOOP:
+                return PLAY_MODEL_LIST_LOOP_INT;
+            case PLAY_MODEL_RANDOM:
+                return PLAY_MODEL_RANDOM_INT;
+            case PLAY_MODEL_SINGLE_LOOP:
+                return PLAY_MODEL_SINGLE_LOOP_INT;
+        }
+        return PLAY_MODEL_LIST_INT;
+    }
+
+    private XmPlayListControl.PlayMode getModeByInt(int index){
+        switch (index){
+            case PLAY_MODEL_LIST_INT:
+                return XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
+            case PLAY_MODEL_LIST_LOOP_INT:
+                return XmPlayListControl.PlayMode.PLAY_MODEL_LIST_LOOP;
+            case PLAY_MODEL_RANDOM_INT:
+                return XmPlayListControl.PlayMode.PLAY_MODEL_RANDOM;
+            case PLAY_MODEL_SINGLE_LOOP_INT:
+                return XmPlayListControl.PlayMode.PLAY_MODEL_SINGLE_LOOP;
+        }
+        return XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
     }
 
     @Override
@@ -128,6 +189,10 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
         iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
+        //从 sp 里拿
+        int anInt = mSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
+        mCurrentMode = getModeByInt(anInt);
+        iPlayerViewCallback.onPlayModeChange(mCurrentMode);
         if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
         }
@@ -209,6 +274,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void onSoundPrepared() {
+        mInstance.setPlayMode(mCurrentMode);
         Log.d(TAG, "onSoundPrepared: ");
         if (mInstance.getPlayerStatus() == PlayerConstants.STATE_PREPARED) {
             mInstance.play();
