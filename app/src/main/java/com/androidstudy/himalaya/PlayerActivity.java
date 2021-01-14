@@ -1,5 +1,6 @@
 package com.androidstudy.himalaya;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -61,6 +62,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
     private View mPlayListBtn;
     private DPopWindow mDPopWindow;
+    private ValueAnimator mEnterBgAnimator;
+    private ValueAnimator mOutBgAnimator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +76,36 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mPlayerPresenter.registerViewCallback(this);
         mPlayerPresenter.getPlayList();
         initEvent();
+        initBgAnimation();
+
+    }
+
+    private void initBgAnimation() {
+
+        mEnterBgAnimator = ValueAnimator.ofFloat(1.0f,0.8f);
+        mEnterBgAnimator.setDuration(100);
+        mEnterBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                Log.d(TAG, "onAnimationUpdate: " + animation.getAnimatedValue());
+                float animatedValue = (float) animation.getAnimatedValue();
+                // 处理背景
+                updateBgAlpha(animatedValue);
+            }
+        });
+
+
+        mOutBgAnimator = ValueAnimator.ofFloat(0.8f,1.0f);
+        mOutBgAnimator.setDuration(100);
+        mOutBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedValue = (float) animation.getAnimatedValue();
+                // 处理背景
+                updateBgAlpha(animatedValue);
+            }
+        });
 
 
     }
@@ -207,8 +240,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             public void onClick(View v) {
 
                 mDPopWindow.showAtLocation(v, Gravity.BOTTOM,0,0);
-                // 处理背景
-                updateBgAlpha(0.8f);
+
+                mEnterBgAnimator.start();
 
             }
         });
@@ -217,7 +250,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             @Override
             public void onDismiss() {
                 //窗体消失，恢复透明度
-                updateBgAlpha(1.0f);
+                mOutBgAnimator.start();
             }
         });
 
