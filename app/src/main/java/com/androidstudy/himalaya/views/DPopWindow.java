@@ -17,6 +17,7 @@ import com.androidstudy.himalaya.R;
 import com.androidstudy.himalaya.adapters.PlayListAdapter;
 import com.androidstudy.himalaya.base.BaseApplication;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import java.util.List;
 
@@ -109,6 +110,39 @@ public class DPopWindow extends PopupWindow {
     public void setPlayListItemClickListener(PlayListItemClickListener listener){
         mAdapter.setOnClickItemListener(listener);
     }
+
+    public void updatePlayMode(XmPlayListControl.PlayMode currentMode) {
+        updatePlayModeBtnImage(currentMode);
+    }
+
+    /**
+     * 根据当前的状态更新播放模式图标
+     */
+    private void updatePlayModeBtnImage(XmPlayListControl.PlayMode playMode) {
+        int textId = R.string.play_mode_order_text;
+        switch (playMode){
+            case PLAY_MODEL_LIST:
+                mPlayModeIv.setImageResource(R.drawable.selector_player_mode_list_order);
+                textId = R.string.play_mode_order_text;
+                break;
+            case PLAY_MODEL_LIST_LOOP:
+                mPlayModeIv.setImageResource(R.drawable.selector_player_mode_list_loop);
+                textId = R.string.play_mode_list_play_text;
+                break;
+            case PLAY_MODEL_RANDOM:
+                mPlayModeIv.setImageResource(R.drawable.selector_player_mode_random);
+                textId = R.string.play_mode_random_text;
+                break;
+            case PLAY_MODEL_SINGLE_LOOP:
+                mPlayModeIv.setImageResource(R.drawable.selector_player_mode_single_loop);
+                textId = R.string.play_mode_single_play_text;
+                break;
+        }
+
+        mPlayModeTv.setText(textId);
+    }
+
+
     public interface PlayListItemClickListener{
         void onClickItem(int position);
     }

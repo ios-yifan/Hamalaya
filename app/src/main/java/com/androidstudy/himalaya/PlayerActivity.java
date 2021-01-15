@@ -386,8 +386,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     @Override
     public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
         mCurrentMode = playMode;
+        // 跟新 pop 里的播放模式
+        mDPopWindow.updatePlayMode(mCurrentMode);
         updatePlayModeBtnImage();
-
     }
 
     @Override
