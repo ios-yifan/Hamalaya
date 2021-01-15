@@ -5,14 +5,14 @@
     android:background="@drawable/shape_play_list_bg"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/play_list_controller_container"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
+            android:layout_centerVertical="true"
             android:id="@+id/play_list_play_mode_container"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -32,9 +32,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="顺序播放" />
+
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/play_list_order_container"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+           <ImageView
+               android:id="@+id/play_list_play_order_iv"
+               android:src="@drawable/selector_player_mode_list_order"
+               android:layout_width="20dp"
+               android:layout_height="20dp"/>
+            <TextView
+                android:id="@+id/play_list_play_order_tv"
+                android:layout_marginLeft="6dp"
+                android:textSize="16sp"
+                android:textColor="@color/sec_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="顺序" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/play_list_rv"

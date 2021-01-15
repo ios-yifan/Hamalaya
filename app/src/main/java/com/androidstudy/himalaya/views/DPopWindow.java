@@ -2,7 +2,6 @@ package com.androidstudy.himalaya.views;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,10 @@ public class DPopWindow extends PopupWindow {
     private View playModeIv;
     private ImageView mPlayModeIv;
     private View mContainer;
-    private PlaylistPlayModeClickListener mPlaylistPlayModeClickListener = null;
+    private PlaylistActionListener mPlaylistPlayModeClickListener = null;
+    private View mOrderContainer;
+    private ImageView mOrderIcon;
+    private TextView mOrderTv;
 
     public DPopWindow() {
         //载入 view
@@ -67,6 +69,9 @@ public class DPopWindow extends PopupWindow {
         mPlayModeIv = mPopView.findViewById(R.id.play_list_play_mode_iv);
         mContainer = mPopView.findViewById(R.id.play_list_play_mode_container);
 
+        mOrderContainer = mPopView.findViewById(R.id.play_list_order_container);
+        mOrderIcon = mPopView.findViewById(R.id.play_list_play_order_iv);
+        mOrderTv = mPopView.findViewById(R.id.play_list_play_order_tv);
     }
 
     private void initEvent() {
@@ -83,6 +88,15 @@ public class DPopWindow extends PopupWindow {
             public void onClick(View v) {
                 if (mPlaylistPlayModeClickListener != null) {
                     mPlaylistPlayModeClickListener.onPlayModeClick();
+                }
+            }
+        });
+
+        mOrderContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlaylistPlayModeClickListener != null) {
+                    mPlaylistPlayModeClickListener.onOrderClick();
                 }
             }
         });
@@ -113,6 +127,11 @@ public class DPopWindow extends PopupWindow {
 
     public void updatePlayMode(XmPlayListControl.PlayMode currentMode) {
         updatePlayModeBtnImage(currentMode);
+    }
+
+    public void updateOrderIcon(boolean isOrder){
+        mOrderIcon.setImageResource(isOrder ? R.drawable.selector_player_mode_list_order : R.drawable.selector_player_mode_list_revers);
+        mOrderTv.setText(isOrder? "顺序" :"逆序");
     }
 
     /**
@@ -147,11 +166,22 @@ public class DPopWindow extends PopupWindow {
         void onClickItem(int position);
     }
 
-    public void setPlaylistPlayModeClickListener(PlaylistPlayModeClickListener listener){
+    public void setPlaylistPlayModeClickListener(PlaylistActionListener listener){
         mPlaylistPlayModeClickListener = listener;
     }
 
-    public interface PlaylistPlayModeClickListener{
+    public interface PlaylistActionListener {
+
+        /**
+         * 播放模式被点击
+         */
         void onPlayModeClick();
+
+        /**
+         * 播放顺序点击
+         */
+        void onOrderClick();
     }
+
+
 }

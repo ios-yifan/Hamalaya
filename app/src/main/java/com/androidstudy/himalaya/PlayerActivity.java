@@ -259,14 +259,24 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             }
         });
 
-        mDPopWindow.setPlaylistPlayModeClickListener(new DPopWindow.PlaylistPlayModeClickListener() {
+        mDPopWindow.setPlaylistPlayModeClickListener(new DPopWindow.PlaylistActionListener() {
             @Override
             public void onPlayModeClick() {
                 switchPlayMode();
             }
+
+            @Override
+            public void onOrderClick() {
+                mDPopWindow.updateOrderIcon(!testO);
+                testO = !testO;
+            }
+
+
         });
 
     }
+
+    private boolean testO = false;
 
     private void switchPlayMode() {
         //根据当前的mode 获取到下一个 Mode
