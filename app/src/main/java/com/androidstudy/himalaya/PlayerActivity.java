@@ -224,12 +224,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         mPlayerSwichBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //根据当前的mode 获取到下一个 Mode
-                XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
-                //修改播放模式
-                if (mPlayerPresenter != null) {
-                    mPlayerPresenter.switchPlayMode(playMode);
-                }
+                switchPlayMode();
 
 
             }
@@ -254,6 +249,32 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             }
         });
 
+        mDPopWindow.setPlayListItemClickListener(new DPopWindow.PlayListItemClickListener() {
+            @Override
+            public void onClickItem(int position) {
+                // 播放列表被点击
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playByIndex(position);
+                }
+            }
+        });
+
+        mDPopWindow.setPlaylistPlayModeClickListener(new DPopWindow.PlaylistPlayModeClickListener() {
+            @Override
+            public void onPlayModeClick() {
+                switchPlayMode();
+            }
+        });
+
+    }
+
+    private void switchPlayMode() {
+        //根据当前的mode 获取到下一个 Mode
+        XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
+        //修改播放模式
+        if (mPlayerPresenter != null) {
+            mPlayerPresenter.switchPlayMode(playMode);
+        }
     }
 
     public void updateBgAlpha(float alpha) {
@@ -355,6 +376,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
             mTrackPageAdapter.setData(list);
         }
 
+        if (mDPopWindow != null) {
+            //：给播放列表一份
+            mDPopWindow.setListData(list);
+        }
 
     }
 
@@ -416,5 +441,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         if (mTrackPageView != null) {
             mTrackPageView.setCurrentItem(playIndex, true);
         }
+
+
+        //修改播放列表里的内容。
+        if (mDPopWindow != null) {
+            mDPopWindow.setCurrentPlayPosition(playIndex);
+        }
+
     }
 }

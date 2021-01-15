@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +46,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
         //设置数据
         Track track = mDetailData.get(position);
 
-        orderTv.setText(position + "");
+        orderTv.setText((position + 1)  + "");
         titleTv.setText(track.getTrackTitle());
         playCountTv.setText(track.getPlayCount() + "");
         int durationMil = track.getDuration() * 1000;
