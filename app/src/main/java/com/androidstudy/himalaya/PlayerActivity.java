@@ -267,11 +267,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
             @Override
             public void onOrderClick() {
-                mDPopWindow.updateOrderIcon(!testO);
-                testO = !testO;
+
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.reversePlayList();
+                }
             }
-
-
         });
 
     }
@@ -458,6 +458,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
         if (mDPopWindow != null) {
             mDPopWindow.setCurrentPlayPosition(playIndex);
         }
+
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+        mDPopWindow.updateOrderIcon(isReverse);
 
     }
 }

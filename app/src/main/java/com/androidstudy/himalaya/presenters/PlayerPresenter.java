@@ -19,6 +19,7 @@ import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayerException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, IXmPlayerStatusListener {
@@ -30,6 +31,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private Track mTrack;
     private int mCurrentIndex = 0;
     private final SharedPreferences mSp;
+    private boolean mIsReverse = false;
 
     private XmPlayListControl.PlayMode mCurrentMode = XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
     /**
@@ -183,6 +185,27 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     public boolean isPlay() {
         // 返回当前是否正在播放
         return mInstance.isPlaying();
+    }
+
+    @Override
+    public void reversePlayList() {
+        //反转播放列表
+
+        List<Track> playList = mInstance.getPlayList();
+        Collections.reverse(playList);
+        mIsReverse = !mIsReverse;
+        mCurrentIndex =  ((playList.size() - 1) - mCurrentIndex);
+
+        mInstance.setPlayList(playList,mCurrentIndex);
+
+        // 更新 UI
+        mTrack = (Track) mInstance.getCurrSound();
+
+        for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
+            iPlayerViewCallback.onListLoaded(playList);
+            iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
+            iPlayerViewCallback.updateListOrder(mIsReverse);
+        }
     }
 
     @Override

@@ -130,8 +130,8 @@ public class DPopWindow extends PopupWindow {
     }
 
     public void updateOrderIcon(boolean isOrder){
-        mOrderIcon.setImageResource(isOrder ? R.drawable.selector_player_mode_list_order : R.drawable.selector_player_mode_list_revers);
-        mOrderTv.setText(isOrder? "顺序" :"逆序");
+        mOrderIcon.setImageResource(isOrder ? R.drawable.selector_player_mode_list_revers : R.drawable.selector_player_mode_list_order);
+        mOrderTv.setText(isOrder? "逆序" :"顺序");
     }
 
     /**
