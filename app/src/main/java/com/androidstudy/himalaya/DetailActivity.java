@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidstudy.himalaya.adapters.DetailListAdapter;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
+import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
 import com.androidstudy.himalaya.presenters.PlayerPresenter;
 import com.androidstudy.himalaya.utils.ImageBlur;
@@ -30,12 +31,13 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener, DetailListAdapter.ItemClickListener {
+public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener, DetailListAdapter.ItemClickListener, IPlayerViewCallback {
 
     private ImageView largeCover;
     private AlbumDetailPresenter albumDetailPresenter;
@@ -49,6 +51,11 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private UILoader mUiLoader;
 
     private long mCurrentId = -1;
+    private ImageView mPlayControl;
+    private TextView mMPlayControlTips;
+    private PlayerPresenter mPlayerPresenter;
+    private List<Track> mCurrentTracks = null;
+    private final static int DEFAULT_PLAY_POSITION = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -59,9 +66,68 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
         initView();
+        //专辑详情
         albumDetailPresenter = AlbumDetailPresenter.getInstance();
         albumDetailPresenter.registerViewCallback(this);
 
+        //播放器
+        mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
+        mPlayerPresenter.registerViewCallback(this);
+
+        updatePlayState(mPlayerPresenter.isPlay());
+        
+        initListener();
+    }
+
+    private void updatePlayState(boolean play) {
+        if (play){
+            //修改图标，文字修改为正在播放
+            if (mPlayControl != null && mMPlayControlTips != null) {
+                mPlayControl.setImageResource(R.drawable.selector_play_control_pause);
+                mMPlayControlTips.setText(R.string.playing_text);
+            }
+        }else {
+            if (mPlayControl != null && mMPlayControlTips != null) {
+                mPlayControl.setImageResource(R.drawable.selector_play_control_play);
+                mMPlayControlTips.setText(R.string.pause_text);
+            }
+        }
+    }
+
+    private void initListener() {
+        mPlayControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //判断播放器是否有播放列表
+                if (mPlayerPresenter != null) {
+                    boolean hasPlayList = mPlayerPresenter.hasPlayList();
+                    if (hasPlayList) {
+                        handlePlayControl();
+                    } else {
+                        handleNoPlayList();
+                    }
+
+                }
+            }
+        });
+    }
+
+    /**
+     * 播放列表为空
+     */
+    private void handleNoPlayList() {
+        mPlayerPresenter.setPlayList(mCurrentTracks,DEFAULT_PLAY_POSITION);
+    }
+
+    private void handlePlayControl() {
+        //控制播放器状态
+        if (mPlayerPresenter.isPlay()) {
+            //正在播放
+            mPlayerPresenter.pause();
+        }else {
+            //暂停
+            mPlayerPresenter.play();
+        }
     }
 
     private void initView() {
@@ -84,6 +150,11 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         smallCover = findViewById(R.id.iv_small_cover);
         albumTitle = findViewById(R.id.tv_title);
         albumAuthor = findViewById(R.id.tv_author);
+
+        mPlayControl = findViewById(R.id.detail_play_control_iv);
+        mMPlayControlTips = findViewById(R.id.detail_play_tv);
+
+
     }
 
     private View createSuccessView(ViewGroup container) {
@@ -116,6 +187,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
+        this.mCurrentTracks = tracks;
         //根据结果显示 UI
         if (tracks == null || tracks.size() == 0) {
             if (mUiLoader != null) {
@@ -194,5 +266,71 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         playerPresenter.setPlayList(list,position);
         Intent intent = new Intent(this,PlayerActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPlayStart() {
+        //修改图标，文字修改为正在播放
+        updatePlayState(true);
+    }
+
+    @Override
+    public void onPlayPause() {
+        updatePlayState(false);
+    }
+
+    @Override
+    public void onPlayStop() {
+        updatePlayState(false);
+    }
+
+    @Override
+    public void onPlayError() {
+
+    }
+
+    @Override
+    public void onNextPlay(Track trace) {
+
+    }
+
+    @Override
+    public void onPrePlay(Track trace) {
+
+    }
+
+    @Override
+    public void onListLoaded(List<Track> list) {
+
+    }
+
+    @Override
+    public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
+
+    }
+
+    @Override
+    public void onProgressChange(long currentProgress, long total) {
+
+    }
+
+    @Override
+    public void onAdLoading() {
+
+    }
+
+    @Override
+    public void onAdFinished() {
+
+    }
+
+    @Override
+    public void onTrackUpdate(Track track, int playIndex) {
+
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+
     }
 }
