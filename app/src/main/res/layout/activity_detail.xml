@@ -47,6 +47,10 @@
 
         <TextView
             android:id="@+id/detail_play_tv"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_marginRight="140dp"
             android:layout_toRightOf="@+id/detail_play_control_iv"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"

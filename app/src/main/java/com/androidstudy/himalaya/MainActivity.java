@@ -4,22 +4,41 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.androidstudy.himalaya.adapters.IndicatorAdapter;
 import com.androidstudy.himalaya.adapters.MainContentAdapter;
+import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
+import com.androidstudy.himalaya.presenters.PlayerPresenter;
 import com.androidstudy.himalaya.utils.LogUtils;
+import com.androidstudy.himalaya.views.RoundRectImageView;
+import com.squareup.picasso.Picasso;
+import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 
-public class MainActivity extends FragmentActivity {
+import java.util.List;
+
+
+public class MainActivity extends FragmentActivity implements IPlayerViewCallback {
 
     private static final String TAG = "MainActivity";
     private MagicIndicator magicIndicator;
     private ViewPager contentPager;
     private IndicatorAdapter indicatorAdapter;
+    private RoundRectImageView mRoundRectImageView;
+    private TextView mTitleTv;
+    private TextView mAuthorTv;
+    private ImageView mPlayControl;
+    private PlayerPresenter mPlayerPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +47,12 @@ public class MainActivity extends FragmentActivity {
 
         initView();
         initEvent();
+        initPresenter();
+    }
+
+    private void initPresenter() {
+        mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
+        mPlayerPresenter.registerViewCallback(this);
     }
 
     /**
@@ -40,6 +65,19 @@ public class MainActivity extends FragmentActivity {
                 LogUtils.d(TAG,"click index is >" + index);
                 if (contentPager != null){
                     contentPager.setCurrentItem(index);
+                }
+            }
+        });
+
+        mPlayControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlayerPresenter != null) {
+                    if (mPlayerPresenter.isPlay()) {
+                        mPlayerPresenter.pause();
+                    } else {
+                        mPlayerPresenter.play();
+                    }
                 }
             }
         });
@@ -68,9 +106,103 @@ public class MainActivity extends FragmentActivity {
         magicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(magicIndicator,contentPager);
 
+        mRoundRectImageView = findViewById(R.id.track_cover);
+        mTitleTv = findViewById(R.id.main_title_tv);
+        mTitleTv.setSelected(true);
+        mAuthorTv = findViewById(R.id.main_author_tv);
+        mPlayControl = findViewById(R.id.play_control_iv);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPlayerPresenter != null) {
+            mPlayerPresenter.unRegisterViewCallback(this);
+        }
+    }
+
+    private void updatePlayControl(boolean isPlaying){
+        if (mPlayControl != null) {
+            mPlayControl.setImageResource(isPlaying ? R.drawable.selector_player_pause:R.drawable.selector_player_play);
+        }
+    }
+
+    @Override
+    public void onPlayStart() {
+
+        updatePlayControl(true);
+    }
+
+    @Override
+    public void onPlayPause() {
+        updatePlayControl(false);
+    }
+
+    @Override
+    public void onPlayStop() {
+        updatePlayControl(false);
+    }
+
+    @Override
+    public void onPlayError() {
 
     }
 
+    @Override
+    public void onNextPlay(Track trace) {
 
+    }
+
+    @Override
+    public void onPrePlay(Track trace) {
+
+    }
+
+    @Override
+    public void onListLoaded(List<Track> list) {
+
+    }
+
+    @Override
+    public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
+
+    }
+
+    @Override
+    public void onProgressChange(long currentProgress, long total) {
+
+    }
+
+    @Override
+    public void onAdLoading() {
+
+    }
+
+    @Override
+    public void onAdFinished() {
+
+    }
+
+    @Override
+    public void onTrackUpdate(Track track, int playIndex) {
+        if (track != null) {
+            String trackTitle = track.getTrackTitle();
+            if (mTitleTv != null) {
+                mTitleTv.setText(trackTitle);
+            }
+            String nickname = track.getAnnouncer().getNickname();
+            if (mAuthorTv != null) {
+                mAuthorTv.setText(nickname);
+            }
+            String coverUrlMiddle = track.getCoverUrlMiddle();
+            Picasso.with(this).load(coverUrlMiddle).into(mPlayControl);
+            Log.d(TAG, "onTrackUpdate: " + trackTitle + nickname + coverUrlMiddle);
+        }
+
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+
+    }
 }

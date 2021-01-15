@@ -26,6 +26,9 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     private Album mTargetAlbum = null;
     private List<IAlbumDetailViewCallback> callbacks = new ArrayList<>();
     private Object String;
+    private int currentId = -1;
+    private int currendPage = 0;
+    private List<Track> mTracks = new ArrayList<>();
 
 
     private AlbumDetailPresenter() {
@@ -34,44 +37,70 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     private static AlbumDetailPresenter sInstance = null;
 
 
-    public static AlbumDetailPresenter getInstance(){
+    public static AlbumDetailPresenter getInstance() {
         if (sInstance == null) {
-            synchronized (AlbumDetailPresenter.class){
+            synchronized (AlbumDetailPresenter.class) {
                 sInstance = new AlbumDetailPresenter();
             }
         }
         return sInstance;
     }
 
-    @Override
-    public void getAlbumDetail(int albumId, int page) {
-
-        //根据页码和 albumid 获取列表
+    private void doLoaded(final boolean isLoadedMore) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(DTransferConstants.ALBUM_ID,albumId+"");
+        map.put(DTransferConstants.ALBUM_ID, currentId + "");
         map.put(DTransferConstants.SORT, "asc");
-        map.put(DTransferConstants.PAGE, page + "");
-        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT+"");
+        map.put(DTransferConstants.PAGE, currendPage + "");
+        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
         CommonRequest.getTracks(map, new IDataCallBack<TrackList>() {
             @Override
             public void onSuccess(TrackList trackList) {
 
                 if (trackList != null) {
-
-                    Log.d(TAG, "onSuccess: thread >>" + Thread.currentThread().getName());
                     List<Track> tracks = trackList.getTracks();
-
                     Log.d(TAG, "onSuccess: size > " + tracks.size());
-                    handlerAlbumDetailResult(tracks);
+                    if (isLoadedMore) {
+                        mTracks.addAll(tracks);
+                        int size = tracks.size();
+                        handlerLoaderMoreResult(size);
+                    } else {
+                        mTracks.addAll(0, tracks);
+                    }
+
+                    handlerAlbumDetailResult(mTracks);
                 }
             }
 
             @Override
             public void onError(int i, String s) {
 
-                handlerError(i,s);
+                if (isLoadedMore) {
+                    currendPage--;
+                }
+                handlerError(i, s);
             }
         });
+    }
+
+    /**
+     * 处理加载更多的结果
+     * @param size
+     */
+    private void handlerLoaderMoreResult(int size) {
+        for (IAlbumDetailViewCallback callback : callbacks) {
+
+            callback.onLoaderMoreFinished(size);
+        }
+    }
+
+    @Override
+    public void getAlbumDetail(int albumId, int page) {
+
+        mTracks.clear();
+        this.currentId = albumId;
+        this.currendPage = page;
+        //根据页码和 albumid 获取列表
+        doLoaded(false);
     }
 
     private void handlerError(int i, String s) {
@@ -95,7 +124,9 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
     @Override
     public void loadMore() {
-
+        //加载更多
+        currendPage++;
+        doLoaded(true);
     }
 
     @Override
@@ -118,7 +149,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     }
 
 
-    public void setTargetAlbum(Album targetAlbum){
+    public void setTargetAlbum(Album targetAlbum) {
         this.mTargetAlbum = targetAlbum;
     }
 }
