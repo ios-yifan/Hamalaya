@@ -444,6 +444,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
 
     @Override
     public void onTrackUpdate(Track track, int playIndex) {
+        if (track != null) {
+            return;
+        }
         this.mTrackTitleText = track.getTrackTitle();
         if (mTitle != null) {
             mTitle.setText(mTrackTitleText);

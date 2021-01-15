@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.androidstudy.himalaya.api.XimalayaApi;
 import com.androidstudy.himalaya.base.BaseApplication;
 import com.androidstudy.himalaya.interfaces.IPlayerPresenter;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.PlayableModel;
 import com.ximalaya.ting.android.opensdk.model.advertis.Advertis;
 import com.ximalaya.ting.android.opensdk.model.advertis.AdvertisList;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 import com.ximalaya.ting.android.opensdk.player.advertis.IXmAdsStatusListener;
 import com.ximalaya.ting.android.opensdk.player.constants.PlayerConstants;
@@ -49,6 +52,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     // sp - key name
     public static final String PLAY_MODE_SP_NAME = "PlayMode";
     public static final String PLAY_MODE_SP_KEY = "currentPlayMode";
+    private int mCurrentProPosition = 0;
+    private int mCurrentProTotal = 0;
 
     private PlayerPresenter() {
         mInstance = XmPlayerManager.getInstance(BaseApplication.getAppContext());
@@ -217,15 +222,57 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     }
 
     @Override
+    public void playByAlbumId(long id) {
+        //获取到专辑内容
+        //设置到播放器
+        //开始播放
+
+        XimalayaApi ximalayaApi = XimalayaApi.getXimalayaApi();
+        ximalayaApi.getAlbumDetail(new IDataCallBack<TrackList>() {
+            @Override
+            public void onSuccess(TrackList trackList) {
+                List<Track> tracks = trackList.getTracks();
+                if (tracks != null && tracks.size() > 0) {
+                    mInstance.setPlayList(tracks,0);
+                    isPlayListSet = true;
+                    Track track = tracks.get(0);
+                    mTrack = track;
+                    mCurrentIndex = 0;
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+
+            }
+        },id,1);
+
+    }
+
+    @Override
     public void registerViewCallback(IPlayerViewCallback iPlayerViewCallback) {
 
+        iPlayerViewCallback.onProgressChange(mCurrentProPosition,mCurrentProTotal);
+        //通知当前节目
         iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
+        //更新状态
+        handlerPlayStatus(iPlayerViewCallback);
         //从 sp 里拿
         int anInt = mSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
         mCurrentMode = getModeByInt(anInt);
         iPlayerViewCallback.onPlayModeChange(mCurrentMode);
         if (!mIPlayerViewCallbacks.contains(iPlayerViewCallback)) {
             mIPlayerViewCallbacks.add(iPlayerViewCallback);
+        }
+    }
+
+    private void handlerPlayStatus(IPlayerViewCallback iPlayerViewCallback) {
+        int playerStatus = mInstance.getPlayerStatus();
+        //根据状态调用
+        if (PlayerConstants.STATE_STARTED == playerStatus) {
+            iPlayerViewCallback.onPlayStart();
+        } else {
+            iPlayerViewCallback.onPlayPause();
         }
     }
 
@@ -357,6 +404,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void onPlayProgress(int i, int i1) {
         Log.d(TAG, "onPlayProgress: " + i + ">>>" + i1);
+        this.mCurrentProPosition = i;
+        this.mCurrentProTotal = i1;
         for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
             iPlayerViewCallback.onProgressChange(i, i1);
         }

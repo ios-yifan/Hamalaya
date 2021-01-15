@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +16,11 @@ import com.androidstudy.himalaya.adapters.IndicatorAdapter;
 import com.androidstudy.himalaya.adapters.MainContentAdapter;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
 import com.androidstudy.himalaya.presenters.PlayerPresenter;
+import com.androidstudy.himalaya.presenters.RecommendPresenter;
 import com.androidstudy.himalaya.utils.LogUtils;
 import com.androidstudy.himalaya.views.RoundRectImageView;
 import com.squareup.picasso.Picasso;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
@@ -39,6 +42,7 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
     private TextView mAuthorTv;
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
+    private View mPlayControlItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +77,50 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
             @Override
             public void onClick(View v) {
                 if (mPlayerPresenter != null) {
-                    if (mPlayerPresenter.isPlay()) {
-                        mPlayerPresenter.pause();
+                    boolean hasPlayList = mPlayerPresenter.hasPlayList();
+                    if (!hasPlayList) {
+                        //没有设置过播放
+                        //设置第一个推荐
+                        playFirstRecommend();
                     } else {
-                        mPlayerPresenter.play();
+                        if (mPlayerPresenter.isPlay()) {
+                            mPlayerPresenter.pause();
+                        } else {
+                            mPlayerPresenter.play();
+                        }
                     }
+
                 }
             }
         });
+
+        mPlayControlItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean hasPlayList = mPlayerPresenter.hasPlayList();
+                if (!hasPlayList) {
+                    playFirstRecommend();
+                }else {
+                    startActivity(new Intent(MainActivity.this,PlayerActivity.class));
+                }
+            }
+        });
+    }
+
+    /**
+     * 第一个推荐
+     */
+    private void playFirstRecommend() {
+
+        List<Album> currentRecommend = RecommendPresenter.getInstance().getCurrentRecommend();
+        if (currentRecommend != null && currentRecommend.size() > 0) {
+
+            Album album = currentRecommend.get(0);
+            long id = album.getId();
+            mPlayerPresenter.playByAlbumId(id);
+
+        }
+
     }
 
     private void initView() {
@@ -111,6 +151,9 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
         mTitleTv.setSelected(true);
         mAuthorTv = findViewById(R.id.main_author_tv);
         mPlayControl = findViewById(R.id.play_control_iv);
+
+        mPlayControlItem = findViewById(R.id.main_play_control_item);
+
     }
 
     @Override

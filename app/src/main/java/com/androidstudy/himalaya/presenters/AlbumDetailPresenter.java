@@ -2,6 +2,7 @@ package com.androidstudy.himalaya.presenters;
 
 import android.util.Log;
 
+import com.androidstudy.himalaya.api.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailPresenter;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.androidstudy.himalaya.utils.Constants;
@@ -47,15 +48,12 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     }
 
     private void doLoaded(final boolean isLoadedMore) {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(DTransferConstants.ALBUM_ID, currentId + "");
-        map.put(DTransferConstants.SORT, "asc");
-        map.put(DTransferConstants.PAGE, currendPage + "");
-        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
-        CommonRequest.getTracks(map, new IDataCallBack<TrackList>() {
+
+        XimalayaApi ximalayaApi = XimalayaApi.getXimalayaApi();
+
+        ximalayaApi.getAlbumDetail(new IDataCallBack<TrackList>() {
             @Override
             public void onSuccess(TrackList trackList) {
-
                 if (trackList != null) {
                     List<Track> tracks = trackList.getTracks();
                     Log.d(TAG, "onSuccess: size > " + tracks.size());
@@ -72,14 +70,14 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
             }
 
             @Override
-            public void onError(int i, String s) {
-
+            public void onError(int i, java.lang.String s) {
                 if (isLoadedMore) {
                     currendPage--;
                 }
                 handlerError(i, s);
             }
-        });
+        },currentId,currendPage);
+
     }
 
     /**

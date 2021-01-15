@@ -39,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <LinearLayout
+        android:id="@+id/main_play_control_item"
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:background="#afafaf"
@@ -59,7 +60,7 @@
             android:layout_marginRight="10dp"
             android:layout_height="wrap_content">
             <TextView
-                android:text="我是大笔气体"
+                android:text="随便听听"
                 android:id="@+id/main_title_tv"
                 android:textColor="#666666"
                 android:textSize="18sp"
@@ -69,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="作者"
+                android:text="喜马拉雅"
                 android:id="@+id/main_author_tv"
                 android:textSize="14sp"
                 android:textColor="#9d9d9d"

@@ -1,5 +1,6 @@
 package com.androidstudy.himalaya.presenters;
 
+import com.androidstudy.himalaya.api.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.IRecommendPresenter;
 import com.androidstudy.himalaya.interfaces.IRecommendViewCallback;
 import com.androidstudy.himalaya.utils.Constants;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RecommendPresenter implements IRecommendPresenter {
+
+    private List<Album> mCurrentRecommend = null;
 
     public RecommendPresenter() {
     }
@@ -40,16 +43,23 @@ public class RecommendPresenter implements IRecommendPresenter {
     }
 
     /**
+     * 获取当前推荐专辑
+     * @return
+     */
+    public List<Album> getCurrentRecommend(){
+        return mCurrentRecommend;
+    }
+
+    /**
      * 获取推荐内容
      */
     public void getRecommendList() {
         updateLoading();
-        Map<String, String> map = new HashMap<>();
-        map.put(DTransferConstants.LIKE_COUNT, Constants.RECOMMEND_COUNT + "");
-        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
+
+        XimalayaApi ximalayaApi = XimalayaApi.getXimalayaApi();
+        ximalayaApi.getRecommendList(new IDataCallBack<GussLikeAlbumList>() {
             @Override
             public void onSuccess(GussLikeAlbumList gussLikeAlbumList) {
-
                 if (gussLikeAlbumList != null) {
                     List<Album> albumList = gussLikeAlbumList.getAlbumList();
                     if (albumList != null) {
@@ -85,6 +95,7 @@ public class RecommendPresenter implements IRecommendPresenter {
                 for (IRecommendViewCallback callback : mCallbacks) {
                     callback.onRecommendListLoaded(albumList);
                 }
+                this.mCurrentRecommend = albumList;
             }
         }
         // 通知 UI 更新
