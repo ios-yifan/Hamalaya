@@ -55,8 +55,13 @@ public class SearchPresenter implements ISearchPresenter {
                 List<Album> albums = searchAlbumList.getAlbums();
                 if (albums != null) {
 
+
                 } else {
 
+                }
+
+                for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                    searchCallBack.onSearchResultLoaded(albums);
                 }
             }
 
@@ -94,6 +99,9 @@ public class SearchPresenter implements ISearchPresenter {
             @Override
             public void onError(int i, String s) {
 
+                for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                    searchCallBack.onError(i,s);
+                }
             }
         });
     }

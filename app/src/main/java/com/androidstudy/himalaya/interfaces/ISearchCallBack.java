@@ -34,4 +34,6 @@ public interface ISearchCallBack {
      */
     void onRecommendWordLoaded(List<QueryResult> keyWorkList);
 
+    void onError(int errorCode, String errorMsg);
+
 }

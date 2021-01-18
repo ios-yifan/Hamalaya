@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidstudy.himalaya.DetailActivity;
 import com.androidstudy.himalaya.R;
-import com.androidstudy.himalaya.adapters.RecommendListAdapter;
+import com.androidstudy.himalaya.adapters.AlbumListAdapter;
 import com.androidstudy.himalaya.base.BaseFragment;
 import com.androidstudy.himalaya.interfaces.IRecommendViewCallback;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
@@ -25,12 +25,12 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.onRecommendItemClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, AlbumListAdapter.onRecommendItemClickListener {
 
     private final String TAG = "RecommendFragment";
     private View rootView;
     private RecyclerView mRecommendRv;
-    private RecommendListAdapter recommendListAdapter;
+    private AlbumListAdapter mAlbumListAdapter;
     private RecommendPresenter mRecommendPresenter;
     private UILoader mLoader;
 
@@ -77,9 +77,9 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
             }
         });
 
-        recommendListAdapter = new RecommendListAdapter();
-        mRecommendRv.setAdapter(recommendListAdapter);
-        recommendListAdapter.setonRecommendItemClickListener(this);
+        mAlbumListAdapter = new AlbumListAdapter();
+        mRecommendRv.setAdapter(mAlbumListAdapter);
+        mAlbumListAdapter.setonRecommendItemClickListener(this);
         return rootView;
     }
 
@@ -88,7 +88,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     public void onRecommendListLoaded(List<Album> result) {
         //获取到推荐内容，这个方法就会触发
         //数据回来更新 UI
-        recommendListAdapter.setData(result);
+        mAlbumListAdapter.setData(result);
         mLoader.updateStatus(UILoader.UIStatus.SUCCESS);
     }
 
