@@ -18,6 +18,7 @@ import com.androidstudy.himalaya.interfaces.IRecommendViewCallback;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
 import com.androidstudy.himalaya.presenters.RecommendPresenter;
 import com.androidstudy.himalaya.views.UILoader;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -60,6 +61,9 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     private View createSuccessView(LayoutInflater layoutInflater, ViewGroup container) {
         rootView = layoutInflater.inflate(R.layout.fragment_recomment,container,false);
         mRecommendRv = rootView.findViewById(R.id.recommend_list);
+        TwinklingRefreshLayout twinklingRefreshLayout = rootView.findViewById(R.id.over_scroll_view);
+        twinklingRefreshLayout.setPureScrollModeOn();
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecommendRv.setLayoutManager(linearLayoutManager);

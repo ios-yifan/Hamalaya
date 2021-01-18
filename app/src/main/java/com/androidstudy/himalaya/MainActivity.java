@@ -43,6 +43,7 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
     private View mPlayControlItem;
+    private View mSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,14 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
                 }
             }
         });
+
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -153,6 +162,8 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
         mPlayControl = findViewById(R.id.play_control_iv);
 
         mPlayControlItem = findViewById(R.id.main_play_control_item);
+
+        mSearchBtn = findViewById(R.id.search_btn);
 
     }
 
