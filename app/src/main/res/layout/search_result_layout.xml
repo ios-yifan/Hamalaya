@@ -3,8 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:overScrollMode="never"
         android:id="@+id/result_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:overScrollMode="never"
+        android:id="@+id/search_recommend_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.androidstudy.himalaya.views.FlowTextLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:id="@+id/recommend_hot_word"/>
 </FrameLayout>

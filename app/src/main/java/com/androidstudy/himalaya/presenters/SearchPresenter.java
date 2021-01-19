@@ -115,6 +115,9 @@ public class SearchPresenter implements ISearchPresenter {
                 if (suggestWords != null) {
                     List<QueryResult> keyWordList = suggestWords.getKeyWordList();
 
+                    for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                        searchCallBack.onRecommendWordLoaded(keyWordList);
+                    }
                 }
             }
 

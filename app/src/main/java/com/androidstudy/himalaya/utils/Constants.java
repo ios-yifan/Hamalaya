@@ -7,5 +7,5 @@ public class Constants {
 
     public static int COUNT_DEFAULT = 50;
 
-    public static int COUNT_HOT_WORD = 20;
+    public static int COUNT_HOT_WORD = 10;
 }
