@@ -3,6 +3,7 @@ package com.androidstudy.himalaya.presenters;
 import com.androidstudy.himalaya.api.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.ISearchCallBack;
 import com.androidstudy.himalaya.interfaces.ISearchPresenter;
+import com.androidstudy.himalaya.utils.Constants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.album.SearchAlbumList;
@@ -16,6 +17,8 @@ import java.util.List;
 
 public class SearchPresenter implements ISearchPresenter {
 
+    private List<Album> searchResult = new ArrayList<>();
+
     private List<ISearchCallBack> mSearchCallBacks = new ArrayList<>();
     //当前的搜索关键字
     private String mCurrentKeyword = null;
@@ -23,17 +26,17 @@ public class SearchPresenter implements ISearchPresenter {
     private static final int DEFAULT_PAGE = 1;
     private int mCurrentPage = DEFAULT_PAGE;
 
-    private SearchPresenter(){
+    private SearchPresenter() {
 
         mXimalayaApi = XimalayaApi.getXimalayaApi();
     }
 
     private static SearchPresenter sSearchPresenter = null;
 
-    public static SearchPresenter getSearchPresenter(){
+    public static SearchPresenter getSearchPresenter() {
 
-        if (sSearchPresenter == null){
-            synchronized (SearchPresenter.class){
+        if (sSearchPresenter == null) {
+            synchronized (SearchPresenter.class) {
                 sSearchPresenter = new SearchPresenter();
             }
         }
@@ -42,7 +45,8 @@ public class SearchPresenter implements ISearchPresenter {
 
     @Override
     public void doSearch(String keyword) {
-
+        mCurrentPage = DEFAULT_PAGE;
+        searchResult.clear();
         //用于重新搜索
         this.mCurrentKeyword = keyword;
         search(keyword);
@@ -53,20 +57,51 @@ public class SearchPresenter implements ISearchPresenter {
             @Override
             public void onSuccess(SearchAlbumList searchAlbumList) {
                 List<Album> albums = searchAlbumList.getAlbums();
+                searchResult.addAll(albums);
                 if (albums != null) {
 
+                    if (mIsLoadMore) {
+                        mIsLoadMore = false;
+                        for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                            if (albums.size() == 0) {
+                                searchCallBack.onLoadMoreResult(searchResult, false);
 
+                            } else {
+
+                                searchCallBack.onLoadMoreResult(searchResult, true);
+                            }
+                        }
+                    } else {
+                        for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                            searchCallBack.onSearchResultLoaded(searchResult);
+                        }
+                    }
                 } else {
-
+                    if (mIsLoadMore) {
+                        mIsLoadMore = false;
+                        for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                            searchCallBack.onLoadMoreResult(searchResult, true);
+                        }
+                    }
                 }
 
-                for (ISearchCallBack searchCallBack : mSearchCallBacks) {
-                    searchCallBack.onSearchResultLoaded(albums);
-                }
+
             }
 
             @Override
             public void onError(int i, String s) {
+
+
+                for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                    if (mIsLoadMore) {
+                        mCurrentPage--;
+                        searchCallBack.onLoadMoreResult(searchResult, false);
+                        mIsLoadMore = false;
+                    } else {
+
+                        searchCallBack.onError(i, s);
+                    }
+                }
 
             }
         });
@@ -77,8 +112,20 @@ public class SearchPresenter implements ISearchPresenter {
         search(mCurrentKeyword);
     }
 
+    private boolean mIsLoadMore = false;
+
     @Override
     public void loaderMode() {
+        if (searchResult.size() < Constants.COUNT_DEFAULT) {
+            for (ISearchCallBack searchCallBack : mSearchCallBacks) {
+                searchCallBack.onLoadMoreResult(searchResult, false);
+            }
+        } else {
+            mIsLoadMore = true;
+            mCurrentPage++;
+            search(mCurrentKeyword);
+
+        }
 
     }
 
@@ -100,7 +147,7 @@ public class SearchPresenter implements ISearchPresenter {
             public void onError(int i, String s) {
 
                 for (ISearchCallBack searchCallBack : mSearchCallBacks) {
-                    searchCallBack.onError(i,s);
+                    searchCallBack.onError(i, s);
                 }
             }
         });

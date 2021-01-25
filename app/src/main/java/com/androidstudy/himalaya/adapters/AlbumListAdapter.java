@@ -69,6 +69,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         notifyDataSetChanged();
     }
 
+
     public class InnerHolder extends RecyclerView.ViewHolder{
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
