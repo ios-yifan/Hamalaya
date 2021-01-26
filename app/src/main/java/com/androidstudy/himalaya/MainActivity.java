@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.androidstudy.himalaya.adapters.IndicatorAdapter;
 import com.androidstudy.himalaya.adapters.MainContentAdapter;
+import com.androidstudy.himalaya.data.HimalayaDBHelper;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
 import com.androidstudy.himalaya.presenters.PlayerPresenter;
 import com.androidstudy.himalaya.presenters.RecommendPresenter;
@@ -53,6 +54,9 @@ public class MainActivity extends FragmentActivity implements IPlayerViewCallbac
         initView();
         initEvent();
         initPresenter();
+
+        HimalayaDBHelper himalayaDBHelper = new HimalayaDBHelper(this);
+        himalayaDBHelper.getWritableDatabase();
     }
 
     private void initPresenter() {

@@ -1,4 +1,4 @@
-package com.androidstudy.himalaya.api;
+package com.androidstudy.himalaya.data;
 
 import com.androidstudy.himalaya.utils.Constants;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;

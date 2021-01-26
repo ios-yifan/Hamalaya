@@ -1,6 +1,6 @@
 package com.androidstudy.himalaya.presenters;
 
-import com.androidstudy.himalaya.api.XimalayaApi;
+import com.androidstudy.himalaya.data.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.ISearchCallBack;
 import com.androidstudy.himalaya.interfaces.ISearchPresenter;
 import com.androidstudy.himalaya.utils.Constants;

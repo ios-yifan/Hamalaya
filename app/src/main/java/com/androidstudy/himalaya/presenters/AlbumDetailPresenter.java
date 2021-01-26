@@ -2,21 +2,16 @@ package com.androidstudy.himalaya.presenters;
 
 import android.util.Log;
 
-import com.androidstudy.himalaya.api.XimalayaApi;
+import com.androidstudy.himalaya.data.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailPresenter;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
-import com.androidstudy.himalaya.utils.Constants;
-import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
-import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 接口的实现类

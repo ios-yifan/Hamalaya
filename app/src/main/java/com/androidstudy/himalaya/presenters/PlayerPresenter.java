@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.androidstudy.himalaya.api.XimalayaApi;
+import com.androidstudy.himalaya.data.XimalayaApi;
 import com.androidstudy.himalaya.base.BaseApplication;
 import com.androidstudy.himalaya.interfaces.IPlayerPresenter;
 import com.androidstudy.himalaya.interfaces.IPlayerViewCallback;
