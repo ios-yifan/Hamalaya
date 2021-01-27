@@ -481,4 +481,10 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
         // 当前界面不需要处理
     }
+
+    @Override
+    public void onSubTooMany() {
+
+        Toast.makeText(this,"订阅满了",Toast.LENGTH_SHORT).show();
+    }
 }

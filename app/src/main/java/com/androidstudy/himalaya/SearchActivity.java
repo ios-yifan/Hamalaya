@@ -1,6 +1,5 @@
 package com.androidstudy.himalaya;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -27,7 +26,6 @@ import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.interfaces.ISearchCallBack;
 import com.androidstudy.himalaya.presenters.AlbumDetailPresenter;
 import com.androidstudy.himalaya.presenters.SearchPresenter;
-import com.androidstudy.himalaya.utils.Constants;
 import com.androidstudy.himalaya.views.FlowTextLayout;
 import com.androidstudy.himalaya.views.UILoader;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -90,7 +88,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallBack {
 
     private void initEvent() {
 
-        mAlbumListAdapter.setonRecommendItemClickListener(new AlbumListAdapter.onRecommendItemClickListener() {
+        mAlbumListAdapter.setAlbumItemClickListener(new AlbumListAdapter.onAlbumItemClickListener() {
             @Override
             public void onItemClick(int position, Album data) {
                 AlbumDetailPresenter.getInstance().setTargetAlbum(data);

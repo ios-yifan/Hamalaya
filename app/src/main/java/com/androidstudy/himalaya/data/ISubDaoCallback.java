@@ -23,4 +23,6 @@ public interface ISubDaoCallback {
      * @param result
      */
     void onSubListLoaded(List<Album> result);
+
+
 }

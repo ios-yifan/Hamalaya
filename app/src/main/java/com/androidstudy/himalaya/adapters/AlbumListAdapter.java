@@ -21,7 +21,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
 
     private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
-    private onRecommendItemClickListener mOnRecommendItemClickListener;
+    private onAlbumItemClickListener mOnAlbumItemClickListener;
+    private onAlbumItemLongClickListener albumItemLongClickListener = null;
 
     @NonNull
     @Override
@@ -39,10 +40,24 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mOnRecommendItemClickListener != null) {
-                    mOnRecommendItemClickListener.onItemClick(position,mData.get(position));
+                if (mOnAlbumItemClickListener != null) {
+
+                    int clickPos = (int) v.getTag();
+                    mOnAlbumItemClickListener.onItemClick(position,mData.get(clickPos));
                 }
                 Log.d(TAG, "onClick: " + position);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                //true 表示消费掉该事件
+                if (albumItemLongClickListener != null) {
+                    int clickPos = (int) v.getTag();
+                    albumItemLongClickListener.onItemLongClick(mData.get(clickPos));
+                }
+                return true;
             }
         });
         holder.setData(mData.get(position));
@@ -93,10 +108,21 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         }
     }
 
-    public void setonRecommendItemClickListener(onRecommendItemClickListener listener){
-        this.mOnRecommendItemClickListener = listener;
+    public void setAlbumItemClickListener(onAlbumItemClickListener listener){
+        this.mOnAlbumItemClickListener = listener;
     }
-    public interface onRecommendItemClickListener{
+    public interface onAlbumItemClickListener {
         void onItemClick(int position, Album data);
+    }
+
+    /**
+     * item 长按的接口
+     */
+    public interface onAlbumItemLongClickListener{
+        void onItemLongClick(Album album);
+    }
+
+    public void setAlbumItemLongClickListener(onAlbumItemLongClickListener listener){
+        this.albumItemLongClickListener = listener;
     }
 }

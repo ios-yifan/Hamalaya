@@ -5,6 +5,7 @@ import com.androidstudy.himalaya.data.ISubDaoCallback;
 import com.androidstudy.himalaya.data.SubscriptionDao;
 import com.androidstudy.himalaya.interfaces.ISubscriptionCallback;
 import com.androidstudy.himalaya.interfaces.ISubscriptionPresenter;
+import com.androidstudy.himalaya.utils.Constants;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import java.util.ArrayList;
@@ -21,15 +22,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCallback {
 
     private final SubscriptionDao mSubscriptionDao;
-    private Map<Long,Album> mData = new HashMap<>();
+    private Map<Long, Album> mData = new HashMap<>();
     private List<ISubscriptionCallback> mCallbacks = new ArrayList<>();
 
-    private SubscriptionPresenter(){
+    private SubscriptionPresenter() {
         mSubscriptionDao = SubscriptionDao.getInstance();
         mSubscriptionDao.setCallback(this);
     }
 
-    private void listSubscriptions(){
+    private void listSubscriptions() {
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> emitter) throws Throwable {
@@ -44,11 +45,11 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
 
     private static SubscriptionPresenter sInstance = null;
 
-    public static SubscriptionPresenter getInstance(){
+    public static SubscriptionPresenter getInstance() {
 
-        if (sInstance == null){
-            synchronized (SubscriptionPresenter.class){
-                if (sInstance == null){
+        if (sInstance == null) {
+            synchronized (SubscriptionPresenter.class) {
+                if (sInstance == null) {
                     sInstance = new SubscriptionPresenter();
                 }
             }
@@ -59,6 +60,15 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     @Override
     public void addSubscription(final Album album) {
 
+        //判断当前订阅数量不能超过 100
+        if (mData.size() >= Constants.MAX_SUB_COUNT) {
+            //
+            for (ISubscriptionCallback callback : mCallbacks) {
+
+                callback.onSubTooMany();
+            }
+            return;
+        }
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> emitter) throws Throwable {
@@ -141,7 +151,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
         mData.clear();
         //获取订阅的回调
         for (Album album : result) {
-            mData.put(album.getId(),album);
+            mData.put(album.getId(), album);
         }
 
         //通知 UI 更新
@@ -154,4 +164,6 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
             }
         });
     }
+
+
 }

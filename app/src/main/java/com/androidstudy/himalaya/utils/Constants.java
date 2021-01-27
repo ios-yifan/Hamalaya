@@ -25,4 +25,6 @@ public class Constants {
     public static final String SUB_PLAY_COUNT = "playCount";
     public static final String SUB_AUTHOR_NAME = "authorName";
     public static final String SUB_ALBUM_ID = "albumId";
+
+    public static final int MAX_SUB_COUNT = 100;
 }

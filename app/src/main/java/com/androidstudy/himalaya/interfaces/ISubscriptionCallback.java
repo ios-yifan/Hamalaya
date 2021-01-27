@@ -24,4 +24,8 @@ public interface ISubscriptionCallback {
      */
     void onSubscriptionsLoaded(List<Album> albumList);
 
+    /**
+     * 订阅数量超限
+     */
+    void onSubTooMany();
 }

@@ -2,7 +2,7 @@ package com.androidstudy.himalaya.utils;
 
 import com.androidstudy.himalaya.base.BaseFragment;
 import com.androidstudy.himalaya.fragments.HistoryFragment;
-import com.androidstudy.himalaya.fragments.RecommendFragment;
+import com.androidstudy.himalaya.fragments.AlbumFragment;
 import com.androidstudy.himalaya.fragments.SubscriptionFragment;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class FragmentCreator {
 
         switch (index){
             case INDEX_RECOMMEND:
-                baseFragment = new RecommendFragment();
+                baseFragment = new AlbumFragment();
                 break;
 
             case INDEX_SUBSCRIPTION:
