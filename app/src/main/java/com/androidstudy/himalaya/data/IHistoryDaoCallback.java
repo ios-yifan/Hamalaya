@@ -26,6 +26,7 @@ public interface IHistoryDaoCallback {
 
     /**
      * 清除历史消息的结果
+     * @param isDeleteSuccess
      */
-    void onHistoriesClear();
+    void onHistoriesClear(boolean isDeleteSuccess);
 }

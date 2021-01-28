@@ -1,5 +1,7 @@
 package com.androidstudy.himalaya.presenters;
 
+import android.util.Log;
+
 import com.androidstudy.himalaya.data.XimalayaApi;
 import com.androidstudy.himalaya.interfaces.IRecommendPresenter;
 import com.androidstudy.himalaya.interfaces.IRecommendViewCallback;
@@ -12,7 +14,10 @@ import java.util.List;
 
 public class RecommendPresenter implements IRecommendPresenter {
 
+    private static final String TAG = "RecommendPresenter";
+
     private List<Album> mCurrentRecommend = null;
+    private List<Album> mAlbumList;
 
     public RecommendPresenter() {
     }
@@ -48,6 +53,11 @@ public class RecommendPresenter implements IRecommendPresenter {
      * 获取推荐内容
      */
     public void getRecommendList() {
+        if (mAlbumList != null && mAlbumList.size() > 0) {
+            Log.d(TAG, "getRecommendList: memory");
+            handlerRecommendResult(mAlbumList);
+            return;
+        }
         updateLoading();
 
         XimalayaApi ximalayaApi = XimalayaApi.getXimalayaApi();
@@ -55,9 +65,9 @@ public class RecommendPresenter implements IRecommendPresenter {
             @Override
             public void onSuccess(GussLikeAlbumList gussLikeAlbumList) {
                 if (gussLikeAlbumList != null) {
-                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
-                    if (albumList != null) {
-                        handlerRecommendResult(albumList);
+                    mAlbumList = gussLikeAlbumList.getAlbumList();
+                    if (mAlbumList != null) {
+                        handlerRecommendResult(mAlbumList);
                     }
                 }
             }

@@ -381,15 +381,16 @@ public class PlayerActivity extends BaseActivity implements IPlayerViewCallback 
     public void onListLoaded(List<Track> list) {
         // 把数据设置到适配器里
 
-        if (mTrackPageAdapter != null) {
-            mTrackPageAdapter.setData(list);
-        }
+        if (list != null) {
+            if (mTrackPageAdapter != null) {
+                mTrackPageAdapter.setData(list);
+            }
 
-        if (mDPopWindow != null) {
-            //：给播放列表一份
-            mDPopWindow.setListData(list);
+            if (mDPopWindow != null) {
+                //：给播放列表一份
+                mDPopWindow.setListData(list);
+            }
         }
-
     }
 
     @Override

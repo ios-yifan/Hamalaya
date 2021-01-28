@@ -374,12 +374,17 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         //}
         mCurrentIndex = mInstance.getCurrentIndex();
 
+        if (playableModel != null) {
+
+        }
         // 第二种写法
         if (playableModel1 instanceof Track) {
             Track curTrack = (Track) playableModel1;
             Log.d(TAG, "onSoundSwitch: playableModel.title" + curTrack.getTrackTitle());
-
             mTrack = curTrack;
+            //报错播放记录
+            HistoryPresenter historyPresenter = HistoryPresenter.getInstance();
+            historyPresenter.addHistory(curTrack);
             for (IPlayerViewCallback iPlayerViewCallback : mIPlayerViewCallbacks) {
                 iPlayerViewCallback.onTrackUpdate(mTrack,mCurrentIndex);
             }

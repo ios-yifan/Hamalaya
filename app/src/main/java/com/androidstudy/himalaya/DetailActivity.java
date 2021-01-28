@@ -20,7 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.androidstudy.himalaya.adapters.DetailListAdapter;
+import com.androidstudy.himalaya.adapters.TrackListAdapter;
 import com.androidstudy.himalaya.base.BaseActivity;
 import com.androidstudy.himalaya.base.BaseApplication;
 import com.androidstudy.himalaya.interfaces.IAlbumDetailViewCallback;
@@ -42,11 +42,10 @@ import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.BezierPagerIndicator;
 
 import java.util.List;
 
-public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener, DetailListAdapter.ItemClickListener, IPlayerViewCallback, ISubscriptionCallback {
+public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener, TrackListAdapter.ItemClickListener, IPlayerViewCallback, ISubscriptionCallback {
 
     private ImageView largeCover;
     private AlbumDetailPresenter albumDetailPresenter;
@@ -55,7 +54,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private TextView albumAuthor;
     private int currentPage = 1;
     private RecyclerView mDetailRecycle;
-    private DetailListAdapter mDetailListAdapter;
+    private TrackListAdapter mTrackListAdapter;
     private FrameLayout mDetailListContainer;
     private UILoader mUiLoader;
 
@@ -240,21 +239,21 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         mDetailRecycle.setLayoutManager(layoutManager);
 
         //2.设置适配器
-        mDetailListAdapter = new DetailListAdapter();
-        mDetailRecycle.setAdapter(mDetailListAdapter);
+        mTrackListAdapter = new TrackListAdapter();
+        mDetailRecycle.setAdapter(mTrackListAdapter);
 
         //设置item 间距
         mDetailRecycle.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = UIUtil.dip2px(view.getContext(),5);
-                outRect.bottom = UIUtil.dip2px(view.getContext(),5);
-                outRect.left = UIUtil.dip2px(view.getContext(),5);
-                outRect.right = UIUtil.dip2px(view.getContext(),5);
+                outRect.top = UIUtil.dip2px(view.getContext(),2);
+                outRect.bottom = UIUtil.dip2px(view.getContext(),2);
+                outRect.left = UIUtil.dip2px(view.getContext(),2);
+                outRect.right = UIUtil.dip2px(view.getContext(),2);
             }
         });
 
-        mDetailListAdapter.setItemClickListener(this);
+        mTrackListAdapter.setItemClickListener(this);
 //        BezierPagerIndicator bezierPagerIndicator = new BezierPagerIndicator(this);
         BezierLayout headerView  = new BezierLayout(this);
         mTwinklingRefreshLayout.setHeaderView(headerView);
@@ -299,7 +298,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         }
 
         // 更新 UI 数据
-        mDetailListAdapter.setData(tracks);
+        mTrackListAdapter.setData(tracks);
     }
 
     @Override
