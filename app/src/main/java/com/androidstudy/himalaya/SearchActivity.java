@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -250,6 +251,14 @@ public class SearchActivity extends BaseActivity implements ISearchCallBack {
                 @Override
                 protected View getSuccessView(ViewGroup container) {
                     return createSuccessView();
+                }
+
+                @Override
+                protected View getEntryView() {
+                    View emptyView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_entry_view,this,false);
+                    TextView tv = emptyView.findViewById(R.id.empty_tv);
+                    tv.setText("搜索内容为空");
+                    return emptyView;
                 }
             };
             if (mLoader.getParent() instanceof ViewGroup) {

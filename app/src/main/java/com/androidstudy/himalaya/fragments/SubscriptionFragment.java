@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class SubscriptionFragment extends BaseFragment implements ISubscriptionCallback, AlbumListAdapter.onAlbumItemClickListener, AlbumListAdapter.onAlbumItemLongClickListener, ConfirmDialog.OnDialogActionListener {
@@ -47,6 +50,14 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
                 @Override
                 protected View getSuccessView(ViewGroup container) {
                     return createSuccessView();
+                }
+
+                @Override
+                protected View getEntryView() {
+                    View emptyView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_entry_view,this,false);
+                    TextView tv = emptyView.findViewById(R.id.empty_tv);
+                    tv.setText("没有订阅内容");
+                    return emptyView;
                 }
             };
             if (mUiLoader.getParent() instanceof ViewGroup) {

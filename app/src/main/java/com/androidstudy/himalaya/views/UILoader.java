@@ -90,7 +90,7 @@ public abstract class UILoader extends FrameLayout {
 
     }
 
-    private View getEntryView() {
+    protected View getEntryView() {
         return LayoutInflater.from(getContext()).inflate(R.layout.fragment_entry_view,this,false);
     }
 
